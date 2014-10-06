@@ -28,7 +28,13 @@
             <ref bean="serviceBean"/>
         </jaxrs:serviceBeans>
     </jaxrs:server>
+    <jaxrs:server id="tagService" address="/tags">
+        <jaxrs:serviceBeans>
+            <ref bean="tagServiceBean"/>
+        </jaxrs:serviceBeans>
+    </jaxrs:server>
 
     <bean id="serviceBean" class="demo.jaxrs.server.CustomerService"/>
+    <bean id="tagServiceBean" class="demo.jaxrs.server.TagService"/>
 </beans>
 
