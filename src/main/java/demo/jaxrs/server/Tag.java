@@ -16,11 +16,13 @@
 
 package demo.jaxrs.server;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement(name = "Tag")
+@XmlType
 public class Tag {
+
     private long tag_id;
+
     private String tag_name;
 
     public long getTag_id() {
@@ -38,4 +40,8 @@ public class Tag {
     public void setTag_name(String name) {
         this.tag_name = name;
     }
+
+	@Override public String toString() {
+		return "TAG: id="+getTag_id()+", name="+getTag_name();
+	}
 }
