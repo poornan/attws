@@ -16,18 +16,14 @@
 
 package demo.jaxrs.server;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 @XmlType
-@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Tag {
-
+	@XmlElement
 	private long tag_id;
-
+	@XmlElement
 	private String tag_name;
 
 	public long getTag_id() {
