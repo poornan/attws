@@ -151,7 +151,7 @@ public class TagService {
 		} catch (Exception e) {
 
 		}
-		return Response.ok(tag.getTag()[0]).build();
+		return Response.ok(tag).build();
 	}
 
 	final void init() {
