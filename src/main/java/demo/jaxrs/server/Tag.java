@@ -19,10 +19,11 @@ package demo.jaxrs.server;
 import javax.xml.bind.annotation.*;
 
 @XmlType
+@XmlRootElement
 public class Tag {
-
+	@XmlElement
 	private long tag_id;
-
+	@XmlElement
 	private String tag_name;
 
 	public long getTag_id() {
