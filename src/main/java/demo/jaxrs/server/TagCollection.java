@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Created by ananthaneshan on 10/7/14.
  */
 
-@XmlRootElement(name = "tagCollection")
+@XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class TagCollection {
 	@XmlElement

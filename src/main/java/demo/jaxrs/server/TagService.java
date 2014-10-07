@@ -24,7 +24,6 @@ import org.apache.cxf.io.CachedOutputStream;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -121,7 +120,7 @@ public class TagService {
 		} catch (Exception e) {
 
 		}
-		return Response.ok(tag,MediaType.APPLICATION_JSON_TYPE).build();
+		return Response.ok(tag).build();
 	}
 
 	@GET
@@ -152,7 +151,7 @@ public class TagService {
 		} catch (Exception e) {
 
 		}
-		return Response.ok(tag.getTag()[0], MediaType.APPLICATION_JSON_TYPE).build();
+		return Response.ok(tag.getTag()[0]).build();
 	}
 
 	final void init() {
