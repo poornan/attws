@@ -24,7 +24,6 @@ import org.apache.cxf.io.CachedOutputStream;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -36,83 +35,13 @@ import java.util.Map;
 
 @Path("/tagservice/")
 public class TagService {
-	long currentId = 001;
 	private static String SERVICE_URL =
 			"https://appserver.dev.cloud.wso2.com/services/t/naasheerwso2/attdataservice-default-SNAPSHOT/";
+	long currentId = 001;
 	Map<Long, Tag> tags = new HashMap<Long, Tag>();
 
 	public TagService() {
 		init();
-	}
-
-	@GET
-	@Path("/tags")
-	@Produces("application/xml")
-	public Response getTags() {
-		//long idNumber = Long.parseLong(id);
-		//return tags.get(idNumber);
-
-		GetMethod get = new GetMethod(SERVICE_URL + "select_all_tag_operation");
-		String str = "";
-		try {
-			System.out.println("getTags");
-			//get1.addRequestHeader("accept", "application/json");
-			//entity = new FileRequestEntity(input, "text/xml; charset=ISO-8859-1");
-			//post.setRequestEntity(entity);
-
-			HttpClient httpClient = new HttpClient();
-			try {
-				int result = httpClient.executeMethod(get);
-				System.out.println("Response status code: " + result);
-				System.out.print("Response body: ");
-				str = get.getResponseBodyAsString();
-				System.out.println(str);
-			} finally {
-				get.releaseConnection();
-			}
-		} catch (Exception e) {
-
-		}
-		return Response.ok(str).build();
-	}
-
-	@GET
-	@Path("/tags/{id}/")
-	@Produces("application/xml")
-	public Response getTag(@PathParam("id") Long id) {
-		System.out.println("----invoking getTag, tag id is: " + id);
-		//long idNumber = Long.parseLong(id);
-		//return tags.get(idNumber);
-
-		GetMethod get = new GetMethod(SERVICE_URL + "select_with_key_tag_operation?tag_id="+id);
-		String str = "";
-		try {
-			System.out.println("getTag");
-			//get1.addRequestHeader("accept", "application/json");
-			//entity = new FileRequestEntity(input, "text/xml; charset=ISO-8859-1");
-			//post.setRequestEntity(entity);
-
-			HttpClient httpClient = new HttpClient();
-			try {
-				int result = httpClient.executeMethod(get);
-				System.out.println("Response status code: " + result);
-				System.out.print("Response body: ");
-				str = get.getResponseBodyAsString();
-				System.out.println(str);
-			} finally {
-				get.releaseConnection();
-			}
-		} catch (Exception e) {
-
-		}
-		return Response.ok(str).build();
-	}
-
-	final void init() {
-		Tag c = new Tag();
-		c.setTag_name("book");
-		c.setTag_id(currentId);
-		tags.put(c.getTag_id(), c);
 	}
 
 	private static String getStringFromInputStream(InputStream in) throws Exception {
@@ -127,8 +56,6 @@ public class TagService {
 
 		GetMethod get = new GetMethod(SERVICE_URL + "select_all_tag_operation");
 		get.addRequestHeader("accept", "application/json");
-		//entity = new FileRequestEntity(input, "text/xml; charset=ISO-8859-1");
-		//post.setRequestEntity(entity);
 
 		HttpClient httpClient = new HttpClient();
 		try {
@@ -142,9 +69,6 @@ public class TagService {
 		}
 		System.out.println("getTag");
 		GetMethod get1 = new GetMethod(SERVICE_URL + "select_all_tag_operation");
-		//get1.addRequestHeader("accept", "application/json");
-		//entity = new FileRequestEntity(input, "text/xml; charset=ISO-8859-1");
-		//post.setRequestEntity(entity);
 
 		HttpClient httpClient1 = new HttpClient();
 		try {
@@ -156,43 +80,84 @@ public class TagService {
 			get1.releaseConnection();
 		}
 
-		/*//Get the DOM Builder Factory
-		DocumentBuilderFactory factory =
-				DocumentBuilderFactory.newInstance();
-
-		//Get the DOM Builder
-		DocumentBuilder builder = factory.newDocumentBuilder();
-
-		//Load and Parse the XML document
-		//document contains the complete XML as a Tree.
-		String xml = new String(get1.getResponseBodyAsString());
-		System.out.println(xml);
-		Document document = builder.parse(xml);
-
-		Tag tag = new Tag();
-		NodeList nodelist = document.getDocumentElement().getFirstChild().getChildNodes();
-		for (int i = 0; i < nodelist.getLength(); i++) {
-			org.w3c.dom.Node node = nodelist.item(i);
-			if (node.getNodeName().equalsIgnoreCase("tag_id")) {
-				tag.setTag_id(Long.valueOf(node.getNodeValue().trim()));
-			} else if (node.getNodeName().equalsIgnoreCase("tag_name")) {
-				tag.setTag_name(node.getNodeValue());
-			}
-		}
-		System.out.println(tag.toString());*/
-
 		try {
-
-			//File file = new File("C:\\file.xml");
 			JAXBContext jaxbContext = JAXBContext.newInstance(TagCollection.class);
 
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 			StringReader xml = new StringReader(get1.getResponseBodyAsString());
 			TagCollection tag = (TagCollection) jaxbUnmarshaller.unmarshal(xml);
-			System.out.println(tag);
+			System.out.println((tag.getTag())[0].toString());
 
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
+	}
+
+	@GET
+	@Path("/tags")
+	public Response getTags() {
+
+		GetMethod get = new GetMethod(SERVICE_URL + "select_all_tag_operation");
+
+		TagCollection tag = null;
+		try {
+			System.out.println("getTags");
+
+			HttpClient httpClient = new HttpClient();
+			try {
+				int result = httpClient.executeMethod(get);
+				System.out.println("Response status code: " + result);
+				System.out.print("Response body: ");
+
+				JAXBContext jaxbContext = JAXBContext.newInstance(TagCollection.class);
+
+				Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+				StringReader xml = new StringReader(get.getResponseBodyAsString());
+				tag = (TagCollection) jaxbUnmarshaller.unmarshal(xml);
+			} finally {
+				get.releaseConnection();
+			}
+		} catch (Exception e) {
+
+		}
+		return Response.ok(tag).build();
+	}
+
+	@GET
+	@Path("/tags/{id}/")
+	public Response getTag(@PathParam("id") Long id) {
+		System.out.println("----invoking getTag, tag id is: " + id);
+
+		GetMethod get = new GetMethod(SERVICE_URL + "select_with_key_tag_operation?tag_id=" + id);
+
+		TagCollection tag = null;
+		try {
+			System.out.println("getTag");
+
+			HttpClient httpClient = new HttpClient();
+			try {
+				int result = httpClient.executeMethod(get);
+				System.out.println("Response status code: " + result);
+				System.out.print("Response body: ");
+
+				JAXBContext jaxbContext = JAXBContext.newInstance(TagCollection.class);
+				Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+				StringReader xml = new StringReader(get.getResponseBodyAsString());
+				tag = (TagCollection) jaxbUnmarshaller.unmarshal(xml);
+
+			} finally {
+				get.releaseConnection();
+			}
+		} catch (Exception e) {
+
+		}
+		return Response.ok(tag.getTag()[0]).build();
+	}
+
+	final void init() {
+		Tag c = new Tag();
+		c.setTag_name("book");
+		c.setTag_id(currentId);
+		tags.put(c.getTag_id(), c);
 	}
 }

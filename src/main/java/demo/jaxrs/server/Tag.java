@@ -21,27 +21,27 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType
 public class Tag {
 
-    private long tag_id;
+	private long tag_id;
 
-    private String tag_name;
+	private String tag_name;
 
-    public long getTag_id() {
-        return tag_id;
-    }
+	public long getTag_id() {
+		return tag_id;
+	}
 
-    public void setTag_id(long id) {
-        this.tag_id = id;
-    }
+	public void setTag_id(long id) {
+		this.tag_id = id;
+	}
 
-    public String getTag_name() {
-        return tag_name;
-    }
+	public String getTag_name() {
+		return tag_name;
+	}
 
-    public void setTag_name(String name) {
-        this.tag_name = name;
-    }
+	public void setTag_name(String name) {
+		this.tag_name = name;
+	}
 
 	@Override public String toString() {
-		return "TAG: id="+getTag_id()+", name="+getTag_name();
+		return "TAG: id=" + getTag_id() + ", name=" + getTag_name();
 	}
 }
