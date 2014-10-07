@@ -47,7 +47,7 @@ public class TagService {
 
 	@GET
 	@Path("/tags")
-	@Produces("application/json")
+	@Produces("application/xml")
 	public Response getTags() {
 		//long idNumber = Long.parseLong(id);
 		//return tags.get(idNumber);
@@ -78,7 +78,7 @@ public class TagService {
 
 	@GET
 	@Path("/tags/{id}/")
-	@Produces("application/json")
+	@Produces("application/xml")
 	public Response getTag(@PathParam("id") Long id) {
 		System.out.println("----invoking getTag, tag id is: " + id);
 		//long idNumber = Long.parseLong(id);
