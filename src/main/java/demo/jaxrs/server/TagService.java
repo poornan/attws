@@ -99,7 +99,7 @@ public class TagService {
 
 		GetMethod get = new GetMethod(SERVICE_URL + "select_all_tag_operation");
 
-		TagCollection tag = null;
+		Tag tag = null;
 		try {
 			System.out.println("getTags");
 
@@ -109,11 +109,11 @@ public class TagService {
 				System.out.println("Response status code: " + result);
 				System.out.print("Response body: ");
 
-				JAXBContext jaxbContext = JAXBContext.newInstance(TagCollection.class);
+				JAXBContext jaxbContext = JAXBContext.newInstance(Tag.class);
 
 				Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 				StringReader xml = new StringReader(get.getResponseBodyAsString());
-				tag = (TagCollection) jaxbUnmarshaller.unmarshal(xml);
+				tag = (Tag) jaxbUnmarshaller.unmarshal(xml);
 			} finally {
 				get.releaseConnection();
 			}
@@ -130,7 +130,7 @@ public class TagService {
 
 		GetMethod get = new GetMethod(SERVICE_URL + "select_with_key_tag_operation?tag_id=" + id);
 
-		TagCollection tag = null;
+		Tag tag = null;
 		try {
 			System.out.println("getTag");
 
@@ -140,10 +140,10 @@ public class TagService {
 				System.out.println("Response status code: " + result);
 				System.out.print("Response body: ");
 
-				JAXBContext jaxbContext = JAXBContext.newInstance(TagCollection.class);
+				JAXBContext jaxbContext = JAXBContext.newInstance(Tag.class);
 				Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 				StringReader xml = new StringReader(get.getResponseBodyAsString());
-				tag = (TagCollection) jaxbUnmarshaller.unmarshal(xml);
+				tag = (Tag) jaxbUnmarshaller.unmarshal(xml);
 
 			} finally {
 				get.releaseConnection();

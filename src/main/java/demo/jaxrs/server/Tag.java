@@ -18,6 +18,7 @@ package demo.jaxrs.server;
 
 import javax.xml.bind.annotation.*;
 
+@XmlRootElement (name = "tagCollection")
 @XmlType
 public class Tag {
 
