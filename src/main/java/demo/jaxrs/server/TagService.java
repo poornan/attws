@@ -16,7 +16,6 @@
 
 package demo.jaxrs.server;
 
-import demo.jaxrs.client.Tag;
 import demo.jaxrs.client.TagCollection;
 import demo.jaxrs.util.Marshal;
 import org.apache.commons.httpclient.HttpClient;
@@ -26,96 +25,36 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
 
 @Path("/tagservice/")
 public class TagService {
 	private static String SERVICE_URL =
 			"https://appserver.dev.cloud.wso2.com/services/t/naasheerwso2/attdataservice-default-SNAPSHOT/";
-	long currentId = 001;
-	Map<Long, Tag> tags = new HashMap<Long, Tag>();
-
-	public TagService() {
-		init();
-	}
-
-	public static void main(String[] args) throws Exception {
-
-		GetMethod get = new GetMethod(SERVICE_URL + "select_all_tag_operation");
-		get.addRequestHeader("accept", "application/json");
-
-		HttpClient httpClient = new HttpClient();
-		try {
-			int result = httpClient.executeMethod(get);
-			System.out.println("Response status code: " + result);
-			System.out.print("Response body: ");
-			System.out.println(get.getResponseBodyAsString());
-		} finally {
-
-			get.releaseConnection();
-		}
-		System.out.println("getTag");
-		GetMethod get1 = new GetMethod(SERVICE_URL + "select_all_tag_operation");
-
-		HttpClient httpClient1 = new HttpClient();
-		try {
-			int result = httpClient1.executeMethod(get1);
-			System.out.println("Response status code: " + result);
-			System.out.print("Response body: ");
-			System.out.println(get1.getResponseBodyAsString());
-		} finally {
-			get1.releaseConnection();
-		}
-
-		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(TagCollection.class);
-
-			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			StringReader xml = new StringReader(get1.getResponseBodyAsString());
-			TagCollection tag = (TagCollection) jaxbUnmarshaller.unmarshal(xml);
-			System.out.println((tag.getTag())[0].toString());
-
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-	}
 
 	@GET
 	@Path("/tags")
 	public Response getTags() {
-
 		GetMethod get = new GetMethod(SERVICE_URL + "select_all_tag_operation");
-
 		TagCollection tag = null;
 		try {
-			System.out.println("getTags");
 
 			HttpClient httpClient = new HttpClient();
 			try {
 				int result = httpClient.executeMethod(get);
 				System.out.println("Response status code: " + result);
 				System.out.print("Response body: ");
+				tag = Marshal.unmarshal(TagCollection.class, get.getResponseBodyAsStream());
 
-				/*JAXBContext jaxbContext = JAXBContext.newInstance(TagCollection.class);
-
-				Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-				StringReader xml = new StringReader(get.getResponseBodyAsString());*/
-				InputStream xml = new ByteArrayInputStream(get.getResponseBodyAsString().getBytes());
-				tag = Marshal.unmarshal(TagCollection.class,xml);//(TagCollection) jaxbUnmarshaller.unmarshal(xml);
 			} finally {
 				get.releaseConnection();
+
 			}
 		} catch (Exception e) {
+			System.out.println(e.getMessage());
 
 		}
 		return Response.ok(tag).build();
+
 	}
 
 	@GET
@@ -127,18 +66,13 @@ public class TagService {
 
 		TagCollection tag = new TagCollection();
 		try {
-			System.out.println("getTag");
 
 			HttpClient httpClient = new HttpClient();
 			try {
 				int result = httpClient.executeMethod(get);
 				System.out.println("Response status code: " + result);
 				System.out.print("Response body: ");
-
-				JAXBContext jaxbContext = JAXBContext.newInstance(TagCollection.class);
-				Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-				StringReader xml = new StringReader(get.getResponseBodyAsString());
-				tag = (TagCollection) jaxbUnmarshaller.unmarshal(xml);
+				tag = Marshal.unmarshal(TagCollection.class, get.getResponseBodyAsStream());
 
 			} finally {
 				get.releaseConnection();
@@ -149,10 +83,4 @@ public class TagService {
 		return Response.ok(tag).build();
 	}
 
-	final void init() {
-		Tag c = new Tag();
-		c.setTag_name("book");
-		c.setTag_id(currentId);
-		tags.put(c.getTag_id(), c);
-	}
 }

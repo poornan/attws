@@ -12,10 +12,9 @@ import java.io.InputStream;
 public class Marshal {
 	public static <T> T unmarshal( Class<T> docClass, InputStream inputStream )
 			throws JAXBException {
-		String packageName = docClass.getPackage().getName();
-		JAXBContext jc = JAXBContext.newInstance( packageName );
+		JAXBContext jc = JAXBContext.newInstance( docClass );
 		Unmarshaller u = jc.createUnmarshaller();
-		JAXBElement<T> doc = (JAXBElement<T>)u.unmarshal( inputStream );
-		return doc.getValue();
+		T doc = (T)u.unmarshal( inputStream );
+		return doc;
 	}
 }
