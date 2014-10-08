@@ -16,10 +16,11 @@
 
 package demo.jaxrs.server;
 
+import demo.jaxrs.client.Tag;
+import demo.jaxrs.client.TagCollection;
+import demo.jaxrs.util.Marshal;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.cxf.helpers.IOUtils;
-import org.apache.cxf.io.CachedOutputStream;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -28,6 +29,7 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -42,14 +44,6 @@ public class TagService {
 
 	public TagService() {
 		init();
-	}
-
-	private static String getStringFromInputStream(InputStream in) throws Exception {
-		CachedOutputStream bos = new CachedOutputStream();
-		IOUtils.copy(in, bos);
-		in.close();
-		bos.close();
-		return bos.getOut().toString();
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -109,11 +103,12 @@ public class TagService {
 				System.out.println("Response status code: " + result);
 				System.out.print("Response body: ");
 
-				JAXBContext jaxbContext = JAXBContext.newInstance(TagCollection.class);
+				/*JAXBContext jaxbContext = JAXBContext.newInstance(TagCollection.class);
 
 				Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-				StringReader xml = new StringReader(get.getResponseBodyAsString());
-				tag = (TagCollection) jaxbUnmarshaller.unmarshal(xml);
+				StringReader xml = new StringReader(get.getResponseBodyAsString());*/
+				InputStream xml = new ByteArrayInputStream(get.getResponseBodyAsString().getBytes());
+				tag = Marshal.unmarshal(TagCollection.class,xml);//(TagCollection) jaxbUnmarshaller.unmarshal(xml);
 			} finally {
 				get.releaseConnection();
 			}

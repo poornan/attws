@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package demo.jaxrs.server;
+package demo.jaxrs.client;
 
 import javax.xml.bind.annotation.XmlType;
 

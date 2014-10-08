@@ -1,4 +1,4 @@
-package demo.jaxrs.server;
+package demo.jaxrs.client;
 
 import javax.xml.bind.annotation.XmlType;
 
@@ -6,9 +6,10 @@ import javax.xml.bind.annotation.XmlType;
  * Created by prindu on 08/10/14.
  */
 @XmlType
-public class Webinar {
+public class Content {
+
 	private long content_id;
-	private String presenter;
+	private String level, presenter, reads;
 
 	public long getContent_id() {
 		return content_id;
@@ -18,6 +19,14 @@ public class Webinar {
 		this.content_id = content_id;
 	}
 
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
+	}
+
 	public String getPresenter() {
 		return presenter;
 	}
@@ -25,4 +34,13 @@ public class Webinar {
 	public void setPresenter(String presenter) {
 		this.presenter = presenter;
 	}
+
+	public String getReads() {
+		return reads;
+	}
+
+	public void setReads(String reads) {
+		this.reads = reads;
+	}
+
 }
