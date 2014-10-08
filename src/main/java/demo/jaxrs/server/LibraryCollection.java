@@ -1,4 +1,5 @@
 package demo.jaxrs.server;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -11,16 +12,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LibraryCollection {
 
-    @XmlElement
-    private Library[] libraries;
+	@XmlElement
+	private Library[] libraries;
 
-    public Library[] getLibraries() {
-        return libraries;
-    }
+	public Library[] getLibraries() {
+		return libraries;
+	}
 
-    public void setLibraries(Library[] libraries) {
-        this.libraries = libraries;
-    }
+	public void setLibraries(Library[] libraries) {
+		this.libraries = libraries;
+	}
 }
 
 
