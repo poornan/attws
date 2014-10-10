@@ -9,11 +9,11 @@ import java.io.InputStream;
  * Created by ananthaneshan on 10/8/14.
  */
 public class Marshal {
-	public static <T> T unmarshal( Class<T> docClass, InputStream inputStream )
+	public static <T> T unmarshal(Class<T> xmlType, InputStream inputStream)
 			throws JAXBException {
-		JAXBContext jc = JAXBContext.newInstance( docClass );
-		Unmarshaller u = jc.createUnmarshaller();
-		T doc = (T)u.unmarshal( inputStream );
+		JAXBContext jaxbContext = JAXBContext.newInstance(xmlType);
+		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+		T doc = (T) unmarshaller.unmarshal(inputStream);
 		return doc;
 	}
 }

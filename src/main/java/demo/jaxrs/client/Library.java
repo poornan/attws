@@ -1,11 +1,14 @@
 package demo.jaxrs.client;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
 /**
  * Created by prindu on 08/10/14.
  */
 @XmlType
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Library {
 	private int content_id, category_id;
 	private String title, url, published_date;
