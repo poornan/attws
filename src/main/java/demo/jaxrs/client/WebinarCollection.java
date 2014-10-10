@@ -10,16 +10,16 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class LibraryCollection {
+public class WebinarCollection {
 	@XmlElement
-	private Library[] library;
+	private Webinar[] webinar;
 
-	public Library[] getLibrary() {
-		return library;
+	public Webinar[] getWebinar() {
+		return webinar;
 	}
 
-	public void setLibrary(Library[] library) {
-		this.library = library;
+	public void setWebinar(Webinar[] webinar) {
+		this.webinar = webinar;
 	}
 }
 
