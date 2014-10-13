@@ -1,5 +1,7 @@
-package demo.jaxrs.util;
+package att.jaxrs.util;
 
+import org.apache.cxf.helpers.IOUtils;
+import org.apache.cxf.io.CachedOutputStream;
 import org.apache.http.HttpResponse;
 
 import java.io.*;
@@ -10,7 +12,7 @@ import java.io.*;
 public class Util {
 	// convert InputStream to String
 	public static String getStringFromInputStream(InputStream inputStream) {
-		BufferedReader bufferedReader = null;
+		/*BufferedReader bufferedReader = null;
 		StringBuilder stringBuilder = new StringBuilder();
 
 		String line;
@@ -33,12 +35,22 @@ public class Util {
 			}
 		}
 
-		return stringBuilder.toString();
+		return stringBuilder.toString();*/
+
+		CachedOutputStream bos = new CachedOutputStream();
+		try {
+			IOUtils.copy(inputStream, bos);
+			inputStream.close();
+			bos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return bos.getOut().toString();
 
 	}
 
 	public static String getStringFromInputStream(HttpResponse httpResponse) {
-		BufferedReader bufferedReader = null;
+		/*BufferedReader bufferedReader = null;
 		StringBuilder stringBuilder = new StringBuilder();
 
 		String line;
@@ -62,7 +74,16 @@ public class Util {
 			}
 		}
 
-		return stringBuilder.toString();
+		return stringBuilder.toString();*/
+
+		CachedOutputStream bos = new CachedOutputStream();
+		try {
+			IOUtils.copy(httpResponse.getEntity().getContent(), bos);
+			bos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return bos.getOut().toString();
 
 	}
 

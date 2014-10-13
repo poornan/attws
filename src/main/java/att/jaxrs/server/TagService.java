@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package demo.jaxrs.server;
+package att.jaxrs.server;
 
-import demo.jaxrs.client.TagCollection;
-import demo.jaxrs.util.Marshal;
+import att.jaxrs.client.TagCollection;
+import att.jaxrs.util.Constants;
+import att.jaxrs.util.Marshal;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 
@@ -26,23 +27,20 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
-@Path("/tagservice/")
+@Path("/tagService/")
 public class TagService {
-	private static String SERVICE_URL =
-			"https://appserver.dev.cloud.wso2.com/services/t/naasheerwso2/attdataservice-default-SNAPSHOT/";
 
 	@GET
 	@Path("/tags")
 	public Response getTags() {
-		GetMethod get = new GetMethod(SERVICE_URL + "select_all_tag_operation");
+		GetMethod get = new GetMethod(Constants.SELECT_ALL_TAG_OPERATION);
 		TagCollection tag = null;
 		try {
 
 			HttpClient httpClient = new HttpClient();
 			try {
 				int result = httpClient.executeMethod(get);
-				System.out.println("Response status code: " + result);
-				System.out.print("Response body: ");
+				System.out.println(Constants.RESPONSE_STATUS_CODE + result);
 				tag = Marshal.unmarshal(TagCollection.class, get.getResponseBodyAsStream());
 
 			} finally {
@@ -58,11 +56,11 @@ public class TagService {
 	}
 
 	@GET
-	@Path("/tags/{id}/")
-	public Response getTag(@PathParam("id") Long id) {
-		System.out.println("----invoking getTag, tag id is: " + id);
+	@Path("/tags/{name}/")
+	public Response getTag(@PathParam("name") Long name) {
+		System.out.println("----invoking getTag, tag id is: " + name);
 
-		GetMethod get = new GetMethod(SERVICE_URL + "select_with_key_tag_operation?tag_id=" + id);
+		GetMethod get = new GetMethod(Constants.SELECT_WITH_NAME_TAG_RESOURCE + name);
 
 		TagCollection tag = new TagCollection();
 		try {
@@ -70,8 +68,7 @@ public class TagService {
 			HttpClient httpClient = new HttpClient();
 			try {
 				int result = httpClient.executeMethod(get);
-				System.out.println("Response status code: " + result);
-				System.out.print("Response body: ");
+				System.out.println(Constants.RESPONSE_STATUS_CODE + result);
 				tag = Marshal.unmarshal(TagCollection.class, get.getResponseBodyAsStream());
 
 			} finally {

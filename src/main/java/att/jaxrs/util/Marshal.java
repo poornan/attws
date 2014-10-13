@@ -1,4 +1,4 @@
-package demo.jaxrs.util;
+package att.jaxrs.util;
 
 import org.apache.http.HttpResponse;
 
@@ -29,7 +29,7 @@ public class Marshal {
 		String namespace = out.toString();
 
 		System.out.println(namespace);
-		namespace = namespace.replaceAll("xmlns=\"http://ws.wso2.org/dataservice\"", "");
+		namespace = namespace.replaceAll(Constants.DATA_SERVICE_XMLNS, "");
 		System.out.println(namespace);
 		InputStream stream = Util.getInputStreamFromString(namespace);
 		JAXBContext jaxbContext = JAXBContext.newInstance(xmlType);
@@ -49,7 +49,7 @@ public class Marshal {
 		}
 
 		System.out.println(namespace);
-		namespace = namespace.replaceAll("xmlns=\"http://ws.wso2.org/dataservice\"", "");
+		namespace = namespace.replaceAll(Constants.DATA_SERVICE_XMLNS, "");
 		System.out.println(namespace);
 		InputStream stream = Util.getInputStreamFromString(namespace);
 		JAXBContext jaxbContext = JAXBContext.newInstance(xmlType);
@@ -65,7 +65,7 @@ public class Marshal {
 		namespace = new String(string);
 		System.out.println(namespace);
 
-		namespace = namespace.replaceAll(" xmlns=\"http://ws.wso2.org/dataservice\"", "");
+		namespace = namespace.replaceAll(Constants.DATA_SERVICE_XMLNS, "");
 		System.out.println(namespace);
 
 		InputStream stream = Util.getInputStreamFromString(namespace);

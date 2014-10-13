@@ -40,7 +40,7 @@
     </jaxrs:server>
 
     <!--bean id="serviceBean" class="demo.jaxrs.server.CustomerService"/-->
-    <bean id="tagServiceBean" class="demo.jaxrs.server.TagService"/>
-    <bean id="libraryServiceBean" class="demo.jaxrs.server.LibraryService"/>
+    <bean id="tagServiceBean" class="att.jaxrs.server.TagService"/>
+    <bean id="libraryServiceBean" class="att.jaxrs.server.LibraryService"/>
 </beans>
 

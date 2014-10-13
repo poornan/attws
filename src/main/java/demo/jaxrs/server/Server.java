@@ -16,6 +16,7 @@
 
 package demo.jaxrs.server;
 
+import att.jaxrs.server.TagService;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
 import org.apache.cxf.jaxrs.lifecycle.SingletonResourceProvider;
 

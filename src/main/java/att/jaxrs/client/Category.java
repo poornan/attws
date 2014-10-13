@@ -1,4 +1,4 @@
-package demo.jaxrs.client;
+package att.jaxrs.client;
 
 import javax.xml.bind.annotation.XmlType;
 
@@ -10,6 +10,14 @@ public class Category {
 
 	private int category_id;
 	private String category_name;
+
+	public Category() {
+	}
+
+	public Category(int category_id, String category_name) {
+		this.category_id = category_id;
+		this.category_name = category_name;
+	}
 
 	public int getCategory_id() {
 		return category_id;
@@ -25,5 +33,9 @@ public class Category {
 
 	public void setCategory_name(String category_name) {
 		this.category_name = category_name;
+	}
+
+	@Override public String toString() {
+		return "Category with id: " + category_id + "and name: " + category_name;
 	}
 }
