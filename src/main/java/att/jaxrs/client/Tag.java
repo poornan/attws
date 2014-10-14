@@ -28,12 +28,16 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @XmlType
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Tag {
 
 	private long tag_id;
@@ -86,7 +90,7 @@ public class Tag {
 		urlParameters.add(new BasicNameValuePair("tag_name", tag_name));
 
 		HttpResponse result;
-		String resultStr = "";
+		String resultStr;
 		TagCollection tagCollection = new TagCollection();
 
 		try {
@@ -113,27 +117,25 @@ public class Tag {
 		return -1L;
 	}
 
-	public static Response getTags() {
+	public static TagCollection getTags() {
 		GetMethod get = new GetMethod(Constants.SELECT_ALL_TAG_OPERATION);
 		TagCollection tag = new TagCollection();
-		try {
 
-			HttpClient httpClient = new HttpClient();
+		HttpClient httpClient = new HttpClient();
 			try {
 				int result = httpClient.executeMethod(get);
-				System.out.println("Response status code: " + result);
-				System.out.print("Response body: ");
+				System.out.println(Constants.RESPONSE_STATUS_CODE + result);
 				tag = Marshal.unmarshal(TagCollection.class, get.getResponseBodyAsStream());
 
+			} catch (JAXBException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			} finally {
 				get.releaseConnection();
 
 			}
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-
-		}
-		return Response.ok(tag).build();
+		return tag;
 
 	}
 

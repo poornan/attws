@@ -16,6 +16,7 @@ import java.io.InputStreamReader;
 public class Marshal {
 	public static <T> T unmarshal(Class<T> xmlType, InputStream inputStream)
 			throws JAXBException {
+		System.out.println("unmarshalling input stream");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		StringBuilder out = new StringBuilder();
 		try {
@@ -54,15 +55,13 @@ public class Marshal {
 		InputStream stream = Util.getInputStreamFromString(namespace);
 		JAXBContext jaxbContext = JAXBContext.newInstance(xmlType);
 		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		T doc = (T) unmarshaller.unmarshal(stream);
-		return doc;
+
+		return (T) unmarshaller.unmarshal(stream);
 	}
 
-	public static <T> T unmarshal(Class<T> xmlType, String string)
+	public static <T> T unmarshal(Class<T> xmlType, final String xmlString)
 			throws JAXBException {
-		String namespace = "";
-
-		namespace = new String(string);
+		String namespace = xmlString;
 		System.out.println(namespace);
 
 		namespace = namespace.replaceAll(Constants.DATA_SERVICE_XMLNS, "");
@@ -71,7 +70,6 @@ public class Marshal {
 		InputStream stream = Util.getInputStreamFromString(namespace);
 		JAXBContext jaxbContext = JAXBContext.newInstance(xmlType);
 		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		T doc = (T) unmarshaller.unmarshal(stream);
-		return doc;
+		return (T) unmarshaller.unmarshal(stream);
 	}
 }

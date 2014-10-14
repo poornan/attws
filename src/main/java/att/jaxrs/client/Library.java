@@ -50,10 +50,7 @@ public class Library {
 	}
 
 	public static String addLibrary(Library library) {
-		final long content_id = getExistingRecord(library.getTitle(), library.getCategory_id());
-		if (-1 != content_id) {
-			return "{response:{Library: 'EXISTING_RECORD'},content_id:" + content_id + "}";
-		}
+
 		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
 		urlParameters
 				.add(new BasicNameValuePair("category_id",

@@ -8,6 +8,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -63,13 +64,16 @@ public class Content_tag {
 		return resultStr;
 	}
 
-	public static String addContentTags(Set<Long> tagIDs, long content_id) {
-		StringBuilder result = new StringBuilder("{ 'tags':{'");
+	public static JSONObject addContentTags(Set<Long> tagIDs, long content_id) {
+		//StringBuilder result = new StringBuilder("{ 'tags':{'");
+		JSONObject jsonObject = new JSONObject();
 		for (long tagID : tagIDs) {
-			result.append(tagID).append(",").append(addContent_tag(content_id, tagID));
+			//result.append(tagID).append(",").append(addContent_tag(content_id, tagID));
+			jsonObject.put(Long.toString(tagID), addContent_tag(content_id, tagID));
 		}
-		result.append("'}}");
-		return result.toString();
+		//result.append("'}}");
+		//return result.toString();
+		return jsonObject;
 	}
 
 	public static String deleteContentTags(Set<Long> tagIDs, long content_id) {
