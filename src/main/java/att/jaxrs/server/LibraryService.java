@@ -198,6 +198,7 @@ public class LibraryService {
 		jsonObject.put("contentTagDeleted", Content_tag.deleteContentTags(tagIDs, content_id));
 		return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
 		               .build();
+
 	}
 
 }
