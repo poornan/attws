@@ -27,7 +27,7 @@ public class LibraryService {
 	                           @FormParam("reads") String reads,
 	                           @FormParam("tag_id") String tag_id) {
 		System.out.println("----invoking addLibrary, Library Title is: " + title);
-		if (null != title && title.isEmpty() || null == title || category_id == 0) {
+		if ((null != title && title.isEmpty()) || null == title || category_id == 0) {
 			return Response.status(400).build();
 		}
 		final long content_id = Library.getExistingRecord(title, category_id);
@@ -67,7 +67,7 @@ public class LibraryService {
 			responseDS.put("tags", responseTagDS);
 		}
 		response.put("response", responseDS);
-		return Response.ok(response.toString()).build();
+		return Response.ok(response.toString()).header("Access-Control-Allow-Origin", "*").build();
 	}
 
 	@GET
@@ -107,7 +107,7 @@ public class LibraryService {
 	                              @FormParam("level") String level,
 	                              @FormParam("reads") String reads,
 	                              @FormParam("tag_id") String tag_id) {
-		if (null != title && title.isEmpty() || null == title || category_id == 0) {
+		if ((null != title && title.isEmpty()) || null == title || category_id == 0) {
 			return Response.status(400).build();
 		}
 
