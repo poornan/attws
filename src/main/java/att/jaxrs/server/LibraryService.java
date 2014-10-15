@@ -28,7 +28,7 @@ public class LibraryService {
 	                           @FormParam("tag_id") String tag_id) {
 		System.out.println("----invoking addLibrary, Library Title is: " + title);
 		if ((null != title && title.isEmpty()) || null == title || category_id == 0) {
-			return Response.status(400).build();
+			return Response.status(400).header("Access-Control-Allow-Origin", "*").build();
 		}
 		final long content_id = Library.getExistingRecord(title, category_id);
 		System.out.println("content id " + content_id);
@@ -38,7 +38,8 @@ public class LibraryService {
 			m1.put("Library", "EXISTING_RECORD");
 			m1.put("content_id", Long.toString(content_id));
 			response.put("response", m1);
-			return Response.notModified(response.toString()).build();
+			return Response.notModified(response.toString()).header("Access-Control-Allow-Origin",
+			                                                        "*").build();
 		}
 
 		JSONObject responseDS = new JSONObject();
@@ -82,7 +83,8 @@ public class LibraryService {
 				jsonObject.put(tag.getTag_name(), tag.getTag_id());
 			}
 		}
-		return Response.ok(jsonObject.toString()).build();
+		return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
+		               .build();
 	}
 
 	@POST
@@ -92,7 +94,8 @@ public class LibraryService {
 		Tag tag = new Tag(tag_name);
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("tag", Tag.addTag(tag));
-		return Response.ok(jsonObject.toString()).build();
+		return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
+		               .build();
 	}
 
 	@PUT
@@ -108,7 +111,7 @@ public class LibraryService {
 	                              @FormParam("reads") String reads,
 	                              @FormParam("tag_id") String tag_id) {
 		if ((null != title && title.isEmpty()) || null == title || category_id == 0) {
-			return Response.status(400).build();
+			return Response.status(400).header("Access-Control-Allow-Origin", "*").build();
 		}
 
 		Library dbLibrary = Library.selectWithKeyLibraryResource(content_id);
@@ -160,7 +163,8 @@ public class LibraryService {
 			jsonObject.put("tagsAdded", Content_tag.addContentTags(tagIDFromUser, content_id));
 			jsonObject.put("tagsDeleted", Content_tag.deleteContentTags(tagIDFromDB, content_id));
 		}
-		return Response.ok(jsonObject.toString()).build();
+		return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
+		               .build();
 	}
 
 	@DELETE
@@ -192,7 +196,8 @@ public class LibraryService {
 
 		}
 		jsonObject.put("contentTagDeleted", Content_tag.deleteContentTags(tagIDs, content_id));
-		return Response.ok(jsonObject.toString()).build();
+		return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
+		               .build();
 	}
 
 }
