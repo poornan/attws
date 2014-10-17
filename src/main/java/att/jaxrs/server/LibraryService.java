@@ -22,7 +22,6 @@ import att.jaxrs.client.*;
 import org.json.JSONObject;
 
 import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
 import java.util.*;
 
 /**
@@ -110,7 +109,7 @@ public class LibraryService {
 	@GET
 	@Path("/tags")
 	@Produces("application/json")
-	public Response getTags() {
+	public String getTags() {
 		JSONObject jsonObject = new JSONObject();
 		TagCollection tagCollection = Tag.getTags();
 		System.out.println("running getTags: " + tagCollection.getTag().length);
@@ -119,8 +118,9 @@ public class LibraryService {
 				jsonObject.put(tag.getTag_name(), tag.getTag_id());
 			}
 		}
-		return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
-		               .build();
+		/*return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
+		               .build();*/
+		return jsonObject.toString();
 	}
 
 	/**
@@ -132,12 +132,13 @@ public class LibraryService {
 	@POST
 	@Path("/addTag")
 	@Produces("application/json")
-	public Response addTag(@FormParam("tag_name") String tag_name) {
+	public String addTag(@FormParam("tag_name") String tag_name) {
 		Tag tag = new Tag(tag_name);
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("tag", Tag.addTag(tag));
-		return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
-		               .build();
+		/*return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
+		               .build();*/
+		return jsonObject.toString();
 	}
 
 	/**
@@ -157,7 +158,7 @@ public class LibraryService {
 	@PUT
 	@Path("/library")
 	@Produces("application/json")
-	public Response updateLibrary(@FormParam("category_id") int category_id,
+	public String updateLibrary(@FormParam("category_id") int category_id,
 	                              @FormParam("content_id") long content_id,
 	                              @FormParam("title") String title,
 	                              @FormParam("published_date") String published_date,
@@ -167,7 +168,8 @@ public class LibraryService {
 	                              @FormParam("reads") String reads,
 	                              @FormParam("tag_id") String tag_id) {
 		if ((null != title && title.isEmpty()) || null == title || category_id == 0) {
-			return Response.status(400).header("Access-Control-Allow-Origin", "*").build();
+			//			return Response.status(400).header("Access-Control-Allow-Origin", "*").build();
+			return "400";
 		}
 
 		Library dbLibrary = Library.selectWithKeyLibraryResource(content_id);
@@ -219,8 +221,9 @@ public class LibraryService {
 			jsonObject.put("tagsAdded", Content_tag.addContentTags(tagIDFromUser, content_id));
 			jsonObject.put("tagsDeleted", Content_tag.deleteContentTags(tagIDFromDB, content_id));
 		}
-		return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
-		               .build();
+		/*return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
+		               .build();*/
+		return jsonObject.toString();
 	}
 
 	/**
@@ -232,7 +235,7 @@ public class LibraryService {
 	@DELETE
 	@Path("/library")
 	@Produces("application/json")
-	public Response deleteLibrary(@FormParam("content_id") long content_id,
+	public String deleteLibrary(@FormParam("content_id") long content_id,
 	                              @FormParam("category_id") int category_id,
 	                              @FormParam("tag_id") String tag_id) {
 
@@ -252,8 +255,9 @@ public class LibraryService {
 
 		}
 		jsonObject.put("contentTagDeleted", Content_tag.deleteContentTags(tagIDs, content_id));
-		return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
-		               .build();
+		/*return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
+		               .build();*/
+		return jsonObject.toString();
 
 	}
 
