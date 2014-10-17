@@ -18,6 +18,7 @@
 
 package att.jaxrs.util;
 
+import att.jaxrs.client.XmlRootElement;
 import org.apache.http.HttpResponse;
 
 import javax.xml.bind.JAXBContext;
@@ -32,8 +33,7 @@ import java.io.InputStreamReader;
  * Created by ananthaneshan on 10/8/14.
  */
 public class Marshal {
-	public static <T> T unmarshal(Class<T> xmlType, InputStream inputStream)
-			throws JAXBException {
+	public static <T> T unmarshal(Class<T> xmlType, InputStream inputStream) {
 		System.out.println("unmarshalling input stream");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		StringBuilder out = new StringBuilder();
@@ -47,14 +47,20 @@ public class Marshal {
 		}
 		String namespace = out.toString();
 
-		System.out.println(namespace);
 		namespace = namespace.replaceAll(Constants.DATA_SERVICE_XMLNS, "");
-		System.out.println(namespace);
+
 		InputStream stream = Util.getInputStreamFromString(namespace);
-		JAXBContext jaxbContext = JAXBContext.newInstance(xmlType);
-		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		T doc = (T) unmarshaller.unmarshal(stream);
-		return doc;
+		JAXBContext jaxbContext;
+		XmlRootElement doc = null;
+		try {
+			jaxbContext = JAXBContext.newInstance(xmlType);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			doc = (XmlRootElement) unmarshaller.unmarshal(stream);
+			System.out.println("unmarshall successful");
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+		return (T) doc;
 	}
 
 	public static <T> T unmarshal(Class<T> xmlType, HttpResponse httpResponse)
@@ -77,8 +83,7 @@ public class Marshal {
 		return (T) unmarshaller.unmarshal(stream);
 	}
 
-	public static <T> T unmarshal(Class<T> xmlType, final String xmlString)
-			throws JAXBException {
+	public static <T> T unmarshal(Class<T> xmlType, final String xmlString) {
 		String namespace = xmlString;
 		System.out.println(namespace);
 
@@ -86,8 +91,15 @@ public class Marshal {
 		System.out.println(namespace);
 
 		InputStream stream = Util.getInputStreamFromString(namespace);
-		JAXBContext jaxbContext = JAXBContext.newInstance(xmlType);
-		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-		return (T) unmarshaller.unmarshal(stream);
+		JAXBContext jaxbContext;
+		T t = null;
+		try {
+			jaxbContext = JAXBContext.newInstance(xmlType);
+			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+			t = (T) unmarshaller.unmarshal(stream);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+		return t;
 	}
 }

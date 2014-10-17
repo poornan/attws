@@ -21,6 +21,8 @@ package att.jaxrs.client;
 import att.jaxrs.util.Constants;
 import att.jaxrs.util.Marshal;
 import att.jaxrs.util.Util;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -28,14 +30,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,6 +128,31 @@ public class Webinar {
 		return resultStr;
 	}
 
+	public static Webinar[] getWebinar() {
+		// Sent HTTP GET request to query Webinar table
+		GetMethod get = new GetMethod(Constants.SELECT_ALL_WEBINAR_OPERATION);
+		WebinarCollection collection = new WebinarCollection();
+
+		HttpClient httpClient = new HttpClient();
+		try {
+			int result = httpClient.executeMethod(get);
+			System.out.println(Constants.RESPONSE_STATUS_CODE + result);
+			collection = Marshal.unmarshal(WebinarCollection.class, get.getResponseBodyAsStream());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			get.releaseConnection();
+
+		}
+		if (null != collection.getWebinar() && collection.getWebinar().length > 0) {
+			return collection.getWebinar();
+		} else {
+			System.out.println("unmarshalling returned empty collection");
+		}
+		return null;
+	}
+
 	public Long getContent_id() {
 		return content_id;
 	}
@@ -148,34 +171,5 @@ public class Webinar {
 
 	@Override public String toString() {
 		return "Webinar with id: " + content_id;
-	}
-
-	public static Webinar[] getWebinar() {
-		// Sent HTTP GET request to query Webinar table
-		System.out.println("Sent HTTP GET request to query Webinar table");
-
-		URL url;
-		InputStream inputStream = null;
-		try {
-			url = new URL(Constants.SELECT_ALL_WEBINAR_RESOURCE);
-			inputStream = url.openStream();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		String webinarResponse = Util.getStringFromInputStream(inputStream);
-		System.out.println(webinarResponse);
-		WebinarCollection webinarCollection = null;
-		try {
-			webinarCollection = Marshal.unmarshal(WebinarCollection.class, webinarResponse);
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-
-		if (null != webinarCollection && webinarCollection.getWebinar().length > 0) {
-			return webinarCollection.getWebinar();
-		}
-		return null;
 	}
 }

@@ -21,6 +21,8 @@ package att.jaxrs.client;
 import att.jaxrs.util.Constants;
 import att.jaxrs.util.Marshal;
 import att.jaxrs.util.Util;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -29,14 +31,10 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -135,6 +133,32 @@ public class Content_tag {
 		return resultStr;
 	}
 
+	public static Content_tag[] getContent_tags() {
+		// Sent HTTP GET request to query Content_tag table
+		GetMethod get = new GetMethod(Constants.SELECT_ALL_CONTENT_TAG_OPERATION);
+		Content_tagCollection collection = new Content_tagCollection();
+
+		HttpClient httpClient = new HttpClient();
+		try {
+			int result = httpClient.executeMethod(get);
+			System.out.println(Constants.RESPONSE_STATUS_CODE + result);
+			collection =
+					Marshal.unmarshal(Content_tagCollection.class, get.getResponseBodyAsStream());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			get.releaseConnection();
+
+		}
+		if (null != collection.getContentTags() && collection.getContentTags().length > 0) {
+			return collection.getContentTags();
+		} else {
+			System.out.println("unmarshalling returned empty collection");
+		}
+		return null;
+	}
+
 	public long getTag_id() {
 		return tag_id;
 	}
@@ -153,34 +177,5 @@ public class Content_tag {
 
 	@Override public String toString() {
 		return "Content Tag with content id: " + content_id + "tag id: " + tag_id;
-	}
-
-	public static Content_tag[] getContent_tags() {
-		// Sent HTTP GET request to query Content_tag table
-		System.out.println("Sent HTTP GET request to query Content_tag table");
-
-		URL url;
-		InputStream inputStream = null;
-		try {
-			url = new URL(Constants.SELECT_ALL_CONTENT_TAG_RESOURCE);
-			inputStream = url.openStream();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		String contentTagResponse = Util.getStringFromInputStream(inputStream);
-		System.out.println(contentTagResponse);
-		Content_tagCollection contentTagCollection = null;
-		try {
-			contentTagCollection =
-					Marshal.unmarshal(Content_tagCollection.class, contentTagResponse);
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-		if (null != contentTagCollection && contentTagCollection.getContentTags().length > 0) {
-			return contentTagCollection.getContentTags();
-		}
-		return null;
 	}
 }

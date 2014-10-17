@@ -20,16 +20,13 @@ package att.jaxrs.client;
 
 import att.jaxrs.util.Constants;
 import att.jaxrs.util.Marshal;
-import att.jaxrs.util.Util;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Created by prindu on 08/10/14.
@@ -47,6 +44,30 @@ public class Category {
 	public Category(int category_id, String category_name) {
 		this.category_id = category_id;
 		this.category_name = category_name;
+	}
+
+	public static Category[] getCategories() {
+		GetMethod get = new GetMethod(Constants.SELECT_ALL_CATEGORY_OPERATION);
+		CategoryCollection collection = new CategoryCollection();
+
+		HttpClient httpClient = new HttpClient();
+		try {
+			int result = httpClient.executeMethod(get);
+			System.out.println(Constants.RESPONSE_STATUS_CODE + result);
+			collection = Marshal.unmarshal(CategoryCollection.class, get.getResponseBodyAsStream());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			get.releaseConnection();
+
+		}
+		if (null != collection.getCategories() && collection.getCategories().length > 0) {
+			return collection.getCategories();
+		} else {
+			System.out.println("unmarshalling returned empty collection");
+		}
+		return null;
 	}
 
 	public int getCategory_id() {
@@ -67,34 +88,5 @@ public class Category {
 
 	@Override public String toString() {
 		return "Category with id: " + category_id + "and name: " + category_name;
-	}
-
-	public static Category[] getCategories() {
-		// Sent HTTP GET request to query category table
-		System.out.println("Sent HTTP GET request to query category table");
-
-		URL url;
-		InputStream inputStream = null;
-		try {
-			url = new URL(Constants.SELECT_ALL_CATEGORY_RESOURCE);
-			inputStream = url.openStream();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		String categoryResponse = Util.getStringFromInputStream(inputStream);
-		System.out.println(categoryResponse);
-		CategoryCollection categoryCollection = null;
-		try {
-			categoryCollection = Marshal
-					.unmarshal(CategoryCollection.class, categoryResponse);
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-		if (null != categoryCollection && categoryCollection.getCategories().length > 0) {
-			return categoryCollection.getCategories();
-		}
-		return null;
 	}
 }

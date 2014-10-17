@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class WebinarCollection {
+public class WebinarCollection implements att.jaxrs.client.XmlRootElement<Webinar> {
 	@XmlElement
 	private Webinar[] webinar;
 
@@ -38,6 +38,10 @@ public class WebinarCollection {
 
 	public void setWebinar(Webinar[] webinar) {
 		this.webinar = webinar;
+	}
+
+	public Webinar[] getElements() {
+		return webinar;
 	}
 }
 

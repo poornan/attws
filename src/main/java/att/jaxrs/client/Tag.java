@@ -30,7 +30,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -124,19 +123,17 @@ public class Tag {
 		TagCollection tag = new TagCollection();
 
 		HttpClient httpClient = new HttpClient();
-			try {
-				int result = httpClient.executeMethod(get);
-				System.out.println(Constants.RESPONSE_STATUS_CODE + result);
-				tag = Marshal.unmarshal(TagCollection.class, get.getResponseBodyAsStream());
+		try {
+			int result = httpClient.executeMethod(get);
+			System.out.println(Constants.RESPONSE_STATUS_CODE + result);
+			tag = Marshal.unmarshal(TagCollection.class, get.getResponseBodyAsStream());
 
-			} catch (JAXBException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				get.releaseConnection();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			get.releaseConnection();
 
-			}
+		}
 		return tag;
 
 	}
@@ -151,16 +148,16 @@ public class Tag {
 			System.out.println(Constants.RESPONSE_STATUS_CODE + result);
 			tag = Marshal.unmarshal(TagCollection.class, get.getResponseBodyAsStream());
 
-		} catch (JAXBException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			get.releaseConnection();
 
 		}
-		if (null != tag && tag.getTag().length > 0) {
+		if (null != tag.getTag() && tag.getTag().length > 0) {
 			return tag.getTag();
+		} else {
+			System.out.println("unmarshalling returned empty collection");
 		}
 		return null;
 

@@ -25,7 +25,7 @@ public class Constants {
 	public static final String DATA_SERVICE_URI =
 			"https://appserver.dev.cloud.wso2.com/services/t/naasheerwso2/attdataservice-default-SNAPSHOT/";
 
-	public static final String DATA_SERVICE_XMLNS = "xmlns=\"http://ws.wso2.org/dataservice\"";
+	public static final String DATA_SERVICE_XMLNS = " xmlns=\"http://ws.wso2.org/dataservice\"";
 
 	public static final String RESPONSE_STATUS_CODE = "Response status code: ";
 
@@ -80,16 +80,31 @@ public class Constants {
 	public static final String SELECT_ALL_LIBRARY_RESOURCE =
 			DATA_SERVICE_URI + "selectAllLibraryResource";
 
+	public static final String SELECT_ALL_LIBRARY_OPERATION =
+			DATA_SERVICE_URI + "select_all_library_operation";
+
 	public static final String SELECT_ALL_CONTENT_RESOURCE =
 			DATA_SERVICE_URI + "selectAllContentResource";
+
+	public static final String SELECT_ALL_CONTENT_OPERATION =
+			DATA_SERVICE_URI + "select_all_content_operation";
 
 	public static final String SELECT_ALL_WEBINAR_RESOURCE =
 			DATA_SERVICE_URI + "selectAllWebinarResource";
 
+	public static final String SELECT_ALL_WEBINAR_OPERATION =
+			DATA_SERVICE_URI + "select_all_webinar_operation";
+
 	public static final String SELECT_ALL_CONTENT_TAG_RESOURCE =
 			DATA_SERVICE_URI + "selectAllContentTagResource";
 
+	public static final String SELECT_ALL_CONTENT_TAG_OPERATION =
+			DATA_SERVICE_URI + "select_all_content_tag_operation";
+
 	public static final String SELECT_ALL_CATEGORY_RESOURCE =
 			DATA_SERVICE_URI + "selectAllCategoryResource";
+
+	public static final String SELECT_ALL_CATEGORY_OPERATION =
+			DATA_SERVICE_URI + "select_all_category_operation";
 
 }

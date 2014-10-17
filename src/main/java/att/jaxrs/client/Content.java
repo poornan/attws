@@ -21,6 +21,8 @@ package att.jaxrs.client;
 import att.jaxrs.util.Constants;
 import att.jaxrs.util.Marshal;
 import att.jaxrs.util.Util;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -28,14 +30,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,6 +109,54 @@ public class Content {
 		return resultStr;
 	}
 
+	public static String deleteContent(long content_id) {
+		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+		urlParameters.add(new BasicNameValuePair("content_id", Long.toString(content_id)));
+
+		String resultStr = "";
+
+		try {
+
+			DefaultHttpClient httpClient = new DefaultHttpClient();
+			HttpPost post = new HttpPost(Constants.DELETE_CONTENT_RESOURCE);
+			post.setEntity(new UrlEncodedFormEntity(urlParameters));
+			HttpResponse result = httpClient.execute(post);
+			System.out.println(Constants.RESPONSE_STATUS_CODE + result);
+			resultStr = Util.getStringFromInputStream(result.getEntity().getContent());
+			System.out.println(Constants.RESPONSE_BODY + resultStr);
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+
+		}
+		return resultStr;
+	}
+
+	public static Content[] getContents() {
+		// Sent HTTP GET request to query Content table
+		GetMethod get = new GetMethod(Constants.SELECT_ALL_CONTENT_OPERATION);
+		ContentCollection collection = new ContentCollection();
+
+		HttpClient httpClient = new HttpClient();
+		try {
+			int result = httpClient.executeMethod(get);
+			System.out.println(Constants.RESPONSE_STATUS_CODE + result);
+			collection = Marshal.unmarshal(ContentCollection.class, get.getResponseBodyAsStream());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			get.releaseConnection();
+
+		}
+		if (null != collection.getContents() && collection.getContents().length > 0) {
+			return collection.getContents();
+		} else {
+			System.out.println("unmarshalling returned empty collection");
+		}
+		return null;
+	}
+
 	public Long getContent_id() {
 		return content_id;
 	}
@@ -145,57 +191,5 @@ public class Content {
 
 	@Override public String toString() {
 		return "Content with id: " + content_id;
-	}
-
-	public static String deleteContent(long content_id) {
-		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-		urlParameters.add(new BasicNameValuePair("content_id", Long.toString(content_id)));
-
-		String resultStr = "";
-
-		try {
-
-			DefaultHttpClient httpClient = new DefaultHttpClient();
-			HttpPost post = new HttpPost(Constants.DELETE_CONTENT_RESOURCE);
-			post.setEntity(new UrlEncodedFormEntity(urlParameters));
-			HttpResponse result = httpClient.execute(post);
-			System.out.println(Constants.RESPONSE_STATUS_CODE + result);
-			resultStr = Util.getStringFromInputStream(result.getEntity().getContent());
-			System.out.println(Constants.RESPONSE_BODY + resultStr);
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-
-		}
-		return resultStr;
-	}
-
-	public static Content[] getContents() {
-		// Sent HTTP GET request to query Content table
-		System.out.println("Sent HTTP GET request to query Content table");
-
-		URL url;
-		InputStream inputStream = null;
-		try {
-			url = new URL(Constants.SELECT_ALL_CONTENT_RESOURCE);
-			inputStream = url.openStream();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		String contentResponse = Util.getStringFromInputStream(inputStream);
-		System.out.println(contentResponse);
-		ContentCollection contentCollection = null;
-		try {
-			contentCollection = Marshal
-					.unmarshal(ContentCollection.class, contentResponse);
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-		if (null != contentCollection && contentCollection.getContents().length > 0) {
-			return contentCollection.getContents();
-		}
-		return null;
 	}
 }

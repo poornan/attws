@@ -21,6 +21,8 @@ package att.jaxrs.client;
 import att.jaxrs.util.Constants;
 import att.jaxrs.util.Marshal;
 import att.jaxrs.util.Util;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -28,14 +30,10 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -195,6 +193,55 @@ public class Library {
 		return null;
 	}
 
+	public static String deleteLibrary(long content_id) {
+		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+		urlParameters
+				.add(new BasicNameValuePair("content_id", Long.toString(content_id)));
+
+		String resultStr = "";
+
+		try {
+
+			DefaultHttpClient httpClient = new DefaultHttpClient();
+			HttpPost post = new HttpPost(Constants.DELETE_LIBRARY_RESOURCE);
+			post.setEntity(new UrlEncodedFormEntity(urlParameters));
+			HttpResponse result = httpClient.execute(post);
+			System.out.println(Constants.RESPONSE_STATUS_CODE + result);
+			resultStr = Util.getStringFromInputStream(result.getEntity().getContent());
+			System.out.println(Constants.RESPONSE_BODY + resultStr);
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+
+		}
+		return resultStr;
+	}
+
+	public static Library[] getLibraries() {
+		// Sent HTTP GET request to query Library table
+		GetMethod get = new GetMethod(Constants.SELECT_ALL_LIBRARY_OPERATION);
+		LibraryCollection collection = new LibraryCollection();
+
+		HttpClient httpClient = new HttpClient();
+		try {
+			int result = httpClient.executeMethod(get);
+			System.out.println(Constants.RESPONSE_STATUS_CODE + result);
+			collection = Marshal.unmarshal(LibraryCollection.class, get.getResponseBodyAsStream());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			get.releaseConnection();
+
+		}
+		if (null != collection.getLibrary() && collection.getLibrary().length > 0) {
+			return collection.getLibrary();
+		} else {
+			System.out.println("unmarshalling returned empty collection");
+		}
+		return null;
+	}
+
 	public Long getContent_id() {
 		return content_id;
 	}
@@ -237,58 +284,6 @@ public class Library {
 
 	@Override public String toString() {
 		return "Content: id=" + getContent_id() + ", Title=" + getTitle();
-	}
-
-	public static String deleteLibrary(long content_id) {
-		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-		urlParameters
-				.add(new BasicNameValuePair("content_id", Long.toString(content_id)));
-
-		String resultStr = "";
-
-		try {
-
-			DefaultHttpClient httpClient = new DefaultHttpClient();
-			HttpPost post = new HttpPost(Constants.DELETE_LIBRARY_RESOURCE);
-			post.setEntity(new UrlEncodedFormEntity(urlParameters));
-			HttpResponse result = httpClient.execute(post);
-			System.out.println(Constants.RESPONSE_STATUS_CODE + result);
-			resultStr = Util.getStringFromInputStream(result.getEntity().getContent());
-			System.out.println(Constants.RESPONSE_BODY + resultStr);
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-
-		}
-		return resultStr;
-	}
-
-	public static Library[] getLibraries() {
-		// Sent HTTP GET request to query Library table
-		System.out.println("Sent HTTP GET request to query Library table");
-
-		URL url;
-		InputStream inputStream = null;
-		try {
-			url = new URL(Constants.SELECT_ALL_LIBRARY_RESOURCE);
-			inputStream = url.openStream();
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		String libraryResponse = Util.getStringFromInputStream(inputStream);
-		System.out.println(libraryResponse);
-		LibraryCollection libraryCollection = null;
-		try {
-			libraryCollection = Marshal.unmarshal(LibraryCollection.class, libraryResponse);
-		} catch (JAXBException e) {
-			e.printStackTrace();
-		}
-		if (null != libraryCollection && libraryCollection.getLibrary().length > 0) {
-			return libraryCollection.getLibrary();
-		}
-		return null;
 	}
 
 }

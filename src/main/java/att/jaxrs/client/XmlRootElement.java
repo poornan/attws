@@ -18,29 +18,9 @@
 
 package att.jaxrs.client;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * Created by ananthaneshan on 10/17/14.
  */
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
-public class ContentCollection implements att.jaxrs.client.XmlRootElement<Content> {
-	@XmlElement(name = "content")
-	private Content[] contents;
-
-	public Content[] getContents() {
-		return contents;
-	}
-
-	public void setContents(Content[] contents) {
-		this.contents = contents;
-	}
-
-	public Content[] getElements() {
-		return contents;
-	}
+public interface XmlRootElement<T> {
+	public T[] getElements();
 }

@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class LibraryCollection {
+public class LibraryCollection implements att.jaxrs.client.XmlRootElement<Library> {
 	@XmlElement
 	private Library[] library;
 
@@ -38,6 +38,10 @@ public class LibraryCollection {
 
 	public void setLibrary(Library[] library) {
 		this.library = library;
+	}
+
+	public Library[] getElements() {
+		return library;
 	}
 }
 

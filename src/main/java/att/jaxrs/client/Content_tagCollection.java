@@ -26,10 +26,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 /**
  * Created by ananthaneshan on 10/17/14.
  */
-@XmlRootElement
+@XmlRootElement(name = "content_tagCollection")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Content_tagCollection {
-	@XmlElement
+public class Content_tagCollection implements att.jaxrs.client.XmlRootElement<Content_tag> {
+	@XmlElement(name = "content_tag")
 	private Content_tag[] contentTags;
 
 	public Content_tag[] getContentTags() {
@@ -40,4 +40,7 @@ public class Content_tagCollection {
 		this.contentTags = contentTags;
 	}
 
+	public Content_tag[] getElements() {
+		return contentTags;
+	}
 }

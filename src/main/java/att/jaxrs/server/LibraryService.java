@@ -19,16 +19,30 @@
 package att.jaxrs.server;
 
 import att.jaxrs.client.*;
-import com.google.gson.JsonObject;
 import org.json.JSONObject;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
+/**
+ * Contains all Restful service methods.
+ */
 @Path("/libraryService/")
 public class LibraryService {
-
+	/**
+	 * Create Library API call.
+	 *
+	 * @param category_id    Category ID.
+	 * @param title          Title.
+	 * @param published_date Published Date.
+	 * @param url            URL of the content.
+	 * @param presenter      Presenter Names.
+	 * @param level          Level.
+	 * @param reads          No. of Reads.
+	 * @param tag_id         Tag IDs separated by comma.
+	 * @return Query status as application/json.
+	 */
 	@POST
 	@Path("/library")
 	@Produces("application/json")
@@ -85,6 +99,11 @@ public class LibraryService {
 		return Response.ok(response.toString()).header("Access-Control-Allow-Origin", "*").build();
 	}
 
+	/**
+	 * Get all Tags API method.
+	 *
+	 * @return tags as application/json
+	 */
 	@GET
 	@Path("/tags")
 	@Produces("application/json")
@@ -101,6 +120,12 @@ public class LibraryService {
 		               .build();
 	}
 
+	/**
+	 * API method for adding Tag.
+	 *
+	 * @param tag_name Name of the tag.
+	 * @return Query status as application/json.
+	 */
 	@POST
 	@Path("/addTag")
 	@Produces("application/json")
@@ -112,6 +137,20 @@ public class LibraryService {
 		               .build();
 	}
 
+	/**
+	 * API method for Update library.
+	 *
+	 * @param category_id    Category ID.
+	 * @param content_id     ID of the library to be updated.
+	 * @param title          Title.
+	 * @param published_date Published Date.
+	 * @param url            URL of the content.
+	 * @param presenter      Presenter Names.
+	 * @param level          Level.
+	 * @param reads          No. of Reads.
+	 * @param tag_id         Tag IDs separated by comma.
+	 * @return Query status as application/json.
+	 */
 	@PUT
 	@Path("/library")
 	@Produces("application/json")
@@ -181,17 +220,17 @@ public class LibraryService {
 		               .build();
 	}
 
+	/**
+	 * API method for Delete library.
+	 *
+	 * @param content_id ID of the library to be deleted.
+	 * @return
+	 */
 	@DELETE
 	@Path("/library")
 	@Produces("application/json")
-	public Response deleteLibrary(@FormParam("category_id") int category_id,
-	                              @FormParam("content_id") long content_id,
-	                              @FormParam("title") String title,
-	                              @FormParam("published_date") String published_date,
-	                              @FormParam("url") String url,
-	                              @FormParam("presenter") String presenter,
-	                              @FormParam("level") String level,
-	                              @FormParam("reads") String reads,
+	public Response deleteLibrary(@FormParam("content_id") long content_id,
+	                              @FormParam("category_id") int category_id,
 	                              @FormParam("tag_id") String tag_id) {
 
 		JSONObject jsonObject = new JSONObject();
@@ -215,17 +254,16 @@ public class LibraryService {
 
 	}
 
+	/**
+	 * API method for retrieve all library contents.
+	 *
+	 * @return library content as application/json.
+	 */
 	@GET
 	@Path("/library")
 	@Produces("application/json")
 	public Response getLibraries() {
 		Library[] libraries = Library.getLibraries();
-		/*Map<Long,Library> librariesMap = new HashMap<Long,Library>();
-		if (null != libraries) {
-			for (Library library : libraries) {
-				librariesMap.put(library.getContent_id(),library);
-			}
-		}*/
 
 		Content[] contents = Content.getContents();
 		Map<Long, Content> contentsMap = new HashMap<Long, Content>();
@@ -244,7 +282,6 @@ public class LibraryService {
 
 				Set entrySet = contentTagsMap.entrySet();
 				Iterator it = entrySet.iterator();
-				System.out.println("  Object key  Object value");
 				boolean hasKey = false;
 				while (it.hasNext()) {
 					Map.Entry mapEntry = (Map.Entry) it.next();
@@ -291,6 +328,7 @@ public class LibraryService {
 		for (Library library : libraries) {
 			LibraryDTO libraryDTO = new LibraryDTO();
 			libraryDTO.setContent_id(library.getContent_id());
+
 			libraryDTO.setUrl(library.getUrl());
 			libraryDTO.setTitle(library.getTitle());
 			libraryDTO.setCategory(categoriesMap.get(library.getCategory_id()));
@@ -303,9 +341,13 @@ public class LibraryService {
 			}
 
 			List<Content_tag> contentTagList = contentTagsMap.get(library.getContent_id());
-			for (Content_tag content_tag : contentTagList) {
-				libraryDTO.setTag(content_tag.getTag_id(), tagsMap.get(content_tag.getTag_id()));
+			if (null != contentTagList) {
 
+				for (Content_tag content_tag : contentTagList) {
+					libraryDTO
+							.setTag(content_tag.getTag_id(), tagsMap.get(content_tag.getTag_id()));
+
+				}
 			}
 			libraryDTOList.add(libraryDTO);
 
@@ -314,37 +356,46 @@ public class LibraryService {
 		return Response.ok(createLibrariesJson(libraryDTOList).toString()).build();
 	}
 
+	/**
+	 * Create library JSON object for transmission.
+	 *
+	 * @param libraryDTO LibraryDTO.
+	 * @return library as application/json.
+	 */
 	private JSONObject createLibraryJson(LibraryDTO libraryDTO) {
 		JSONObject library = new JSONObject();
 
 		library.put("url", libraryDTO.getUrl());
 		library.put("title", libraryDTO.getTitle());
 
-		JsonObject category = new JsonObject();
-		category.addProperty("categoryID", libraryDTO.getCategory().getCategory_id());
-		category.addProperty("categoryName", libraryDTO.getCategory().getCategory_name());
+		JSONObject category = new JSONObject();
+		category.put("categoryID", libraryDTO.getCategory().getCategory_id());
+		category.put("categoryName", libraryDTO.getCategory().getCategory_name());
 		library.put("category", category);
-
-		//JsonObject tags = libraryDTO.getTag();
 		library.put("tags", libraryDTO.getTag());
-		//tags.addProperty("tagID", libraryDTO.getTag());
 
-		if (libraryDTO.getCategory().getCategory_id() == 4) {
-			JsonObject webinar = new JsonObject();
-			webinar.addProperty("presenter", libraryDTO.getWebinar().getPresenter());
+		if (libraryDTO.getCategory().getCategory_id() == 4 && null != libraryDTO.getWebinar()) {
+			JSONObject webinar = new JSONObject();
+			webinar.put("presenter", libraryDTO.getWebinar().getPresenter());
 			library.put("webinar", webinar);
 
-		} else {
-			JsonObject content = new JsonObject();
-			content.addProperty("level", libraryDTO.getContent().getLevel());
-			content.addProperty("presenter", libraryDTO.getContent().getPresenter());
-			content.addProperty("reads", libraryDTO.getContent().getReads());
+		} else if (null != libraryDTO.getContent()) {
+			JSONObject content = new JSONObject();
+			content.put("level", libraryDTO.getContent().getLevel());
+			content.put("presenter", libraryDTO.getContent().getPresenter());
+			content.put("reads", libraryDTO.getContent().getReads());
 			library.put("content", content);
 		}
 
 		return library;
 	}
 
+	/**
+	 * Create libraries JSON object for transmission.
+	 *
+	 * @param libraries LibraryDTO list.
+	 * @return Libraries as application/json.
+	 */
 	private JSONObject createLibrariesJson(List<LibraryDTO> libraries) {
 		JSONObject librariesJSON = new JSONObject();
 		for (LibraryDTO dto : libraries) {

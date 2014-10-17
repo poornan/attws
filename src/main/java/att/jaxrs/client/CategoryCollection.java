@@ -20,14 +20,16 @@ package att.jaxrs.client;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Created by ananthaneshan on 10/17/14.
  */
-@XmlRootElement
+@XmlRootElement(name = "categoryCollection")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class CategoryCollection {
+public class CategoryCollection implements att.jaxrs.client.XmlRootElement<Category> {
+	@XmlElement(name = "category")
 	private Category[] categories;
 
 	public Category[] getCategories() {
@@ -36,5 +38,9 @@ public class CategoryCollection {
 
 	public void setCategories(Category[] categories) {
 		this.categories = categories;
+	}
+
+	public Category[] getElements() {
+		return categories;
 	}
 }
