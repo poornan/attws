@@ -61,13 +61,17 @@ public class LibraryService {
 		final long content_id = Library.getExistingRecord(title, category_id);
 		System.out.println("content id " + content_id);
 		JSONObject response = new JSONObject();
+		AddLibraryDTO dto = new AddLibraryDTO();
 		if (-1 != content_id) {
 			JSONObject m1 = new JSONObject();
 			m1.put("Library", "EXISTING_RECORD");
 			m1.put("content_id", Long.toString(content_id));
 			response.put("response", m1);
-			return Response.notModified(response.toString()).header("Access-Control-Allow-Origin",
-			                                                        "*").build();
+			/*return Response.notModified(response.toString()).header("Access-Control-Allow-Origin",
+			                                                        "*").build();*/
+			dto.setResponse(m1);
+			return Response.ok(dto).status(304).header("Access-Control-Allow-Origin",
+			                                           "*").build();
 		}
 
 		JSONObject responseDS = new JSONObject();
@@ -96,7 +100,10 @@ public class LibraryService {
 			responseDS.put("tags", responseTagDS);
 		}
 		response.put("response", responseDS);
-		return Response.ok(response.toString()).header("Access-Control-Allow-Origin", "*").build();
+		dto.setResponse(response);
+		//		return Response.ok(response.toString()).header("Access-Control-Allow-Origin", "*").build();
+		return Response.ok(dto).header("Access-Control-Allow-Origin", "*").build();
+
 	}
 
 	/**
