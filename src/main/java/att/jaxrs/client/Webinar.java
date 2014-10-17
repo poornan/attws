@@ -1,6 +1,25 @@
+/*
+ * Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package att.jaxrs.client;
 
 import att.jaxrs.util.Constants;
+import att.jaxrs.util.Marshal;
 import att.jaxrs.util.Util;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -9,9 +28,14 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,5 +148,34 @@ public class Webinar {
 
 	@Override public String toString() {
 		return "Webinar with id: " + content_id;
+	}
+
+	public static Webinar[] getWebinar() {
+		// Sent HTTP GET request to query Webinar table
+		System.out.println("Sent HTTP GET request to query Webinar table");
+
+		URL url;
+		InputStream inputStream = null;
+		try {
+			url = new URL(Constants.SELECT_ALL_WEBINAR_RESOURCE);
+			inputStream = url.openStream();
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		String webinarResponse = Util.getStringFromInputStream(inputStream);
+		System.out.println(webinarResponse);
+		WebinarCollection webinarCollection = null;
+		try {
+			webinarCollection = Marshal.unmarshal(WebinarCollection.class, webinarResponse);
+		} catch (JAXBException e) {
+			e.printStackTrace();
+		}
+
+		if (null != webinarCollection && webinarCollection.getWebinar().length > 0) {
+			return webinarCollection.getWebinar();
+		}
+		return null;
 	}
 }

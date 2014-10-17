@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package att.jaxrs.util;
 
 /**
@@ -58,4 +76,20 @@ public class Constants {
 
 	public static final String SELECT_WITH_NAME_TAG_RESOURCE =
 			DATA_SERVICE_URI + "selectWithNameTagResource?tag_name=";
+
+	public static final String SELECT_ALL_LIBRARY_RESOURCE =
+			DATA_SERVICE_URI + "selectAllLibraryResource";
+
+	public static final String SELECT_ALL_CONTENT_RESOURCE =
+			DATA_SERVICE_URI + "selectAllContentResource";
+
+	public static final String SELECT_ALL_WEBINAR_RESOURCE =
+			DATA_SERVICE_URI + "selectAllWebinarResource";
+
+	public static final String SELECT_ALL_CONTENT_TAG_RESOURCE =
+			DATA_SERVICE_URI + "selectAllContentTagResource";
+
+	public static final String SELECT_ALL_CATEGORY_RESOURCE =
+			DATA_SERVICE_URI + "selectAllCategoryResource";
+
 }

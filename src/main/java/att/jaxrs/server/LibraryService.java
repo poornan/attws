@@ -1,13 +1,30 @@
+/*
+ * Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package att.jaxrs.server;
 
 import att.jaxrs.client.*;
+import com.google.gson.JsonObject;
 import org.json.JSONObject;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.util.*;
 
 /**
  * Created by prindu on 08/10/14.
@@ -199,6 +216,145 @@ public class LibraryService {
 		return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
 		               .build();
 
+	}
+
+	@GET
+	@Path("/library/")
+	public Response getLibraries() {
+		Library[] libraries = Library.getLibraries();
+		/*Map<Long,Library> librariesMap = new HashMap<Long,Library>();
+		if (null != libraries) {
+			for (Library library : libraries) {
+				librariesMap.put(library.getContent_id(),library);
+			}
+		}*/
+
+		Content[] contents = Content.getContents();
+		Map<Long, Content> contentsMap = new HashMap<Long, Content>();
+		if (null != contents) {
+			for (Content content : contents) {
+				contentsMap.put(content.getContent_id(), content);
+			}
+		}
+
+		Content_tag[] contentTags = Content_tag.getContent_tags();
+		Map<Long, List<Content_tag>> contentTagsMap = new HashMap<Long, List<Content_tag>>();
+		if (null != contentTags) {
+			List<Content_tag> contentTagList;
+
+			for (Content_tag contentTag : contentTags) {
+
+				Set entrySet = contentTagsMap.entrySet();
+				Iterator it = entrySet.iterator();
+				System.out.println("  Object key  Object value");
+				boolean hasKey = false;
+				while (it.hasNext()) {
+					Map.Entry mapEntry = (Map.Entry) it.next();
+					if (contentTag.getContent_id() == mapEntry.getKey()) {
+						hasKey = true;
+						contentTagList = contentTagsMap.get(mapEntry.getKey());
+						contentTagList.add(contentTag);
+
+					}
+				}
+				if (!hasKey) {
+					contentTagList = new ArrayList<Content_tag>();
+					contentTagList.add(contentTag);
+					contentTagsMap.put(contentTag.getContent_id(), contentTagList);
+
+				}
+			}
+		}
+
+		Category[] categories = Category.getCategories();
+		Map<Integer, Category> categoriesMap = new HashMap<Integer, Category>();
+		if (null != categories) {
+			for (Category category : categories) {
+				categoriesMap.put(category.getCategory_id(), category);
+			}
+		}
+
+		Webinar[] webinars = Webinar.getWebinar();
+		Map<Long, Webinar> webinarsMap = new HashMap<Long, Webinar>();
+		if (null != webinars) {
+			for (Webinar webinar : webinars) {
+				webinarsMap.put(webinar.getContent_id(), webinar);
+			}
+		}
+
+		Tag[] tags = Tag.getALLTags();
+		Map<Long, String> tagsMap = new HashMap<Long, String>();
+		if (null != tags) {
+			for (Tag tag : tags) {
+				tagsMap.put(tag.getTag_id(), tag.getTag_name());
+			}
+		}
+		List<LibraryDTO> libraryDTOList = new ArrayList<LibraryDTO>();
+		for (Library library : libraries) {
+			LibraryDTO libraryDTO = new LibraryDTO();
+			libraryDTO.setContent_id(library.getContent_id());
+			libraryDTO.setUrl(library.getUrl());
+			libraryDTO.setTitle(library.getTitle());
+			libraryDTO.setCategory(categoriesMap.get(library.getCategory_id()));
+
+			if (library.getContent_id() == 4) {
+				libraryDTO.setWebinar(webinarsMap.get(library.getContent_id()));
+
+			} else {
+				libraryDTO.setContent(contentsMap.get(library.getContent_id()));
+			}
+
+			List<Content_tag> contentTagList = contentTagsMap.get(library.getContent_id());
+			for (Content_tag content_tag : contentTagList) {
+				libraryDTO.setTag(content_tag.getTag_id(), tagsMap.get(content_tag.getTag_id()));
+
+			}
+			libraryDTOList.add(libraryDTO);
+
+		}
+
+		return Response.ok(createLibrariesJson(libraryDTOList).toString()).build();
+	}
+
+	private JSONObject createLibrayJson(LibraryDTO libraryDTO) {
+		JSONObject library = new JSONObject();
+
+		library.put("url", libraryDTO.getUrl());
+		library.put("title", libraryDTO.getTitle());
+
+		JsonObject category = new JsonObject();
+		category.addProperty("categoryID", libraryDTO.getCategory().getCategory_id());
+		category.addProperty("categoryName", libraryDTO.getCategory().getCategory_name());
+		library.put("category", category);
+
+		//JsonObject tags = libraryDTO.getTag();
+		library.put("tags", libraryDTO.getTag());
+		//tags.addProperty("tagID", libraryDTO.getTag());
+
+		if (libraryDTO.getCategory().getCategory_id() == 4) {
+			JsonObject webinar = new JsonObject();
+			webinar.addProperty("presenter", libraryDTO.getWebinar().getPresenter());
+			library.put("webinar", webinar);
+
+		} else {
+			JsonObject content = new JsonObject();
+			content.addProperty("level", libraryDTO.getContent().getLevel());
+			content.addProperty("presenter", libraryDTO.getContent().getPresenter());
+			content.addProperty("reads", libraryDTO.getContent().getReads());
+			library.put("content", content);
+		}
+
+		return library;
+	}
+
+	private JSONObject createLibrariesJson(List<LibraryDTO> libraries) {
+		JSONObject librariesJSON = new JSONObject();
+		for (LibraryDTO dto : libraries) {
+			librariesJSON.put(Long.toString(dto.getContent_id()), createLibrayJson(dto));
+		}
+		JSONObject result = new JSONObject();
+		result.put("libraries", librariesJSON);
+		return result;
 	}
 
 }
