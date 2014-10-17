@@ -26,14 +26,11 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.*;
 
-/**
- * Created by prindu on 08/10/14.
- */
 @Path("/libraryService/")
 public class LibraryService {
 
 	@POST
-	@Path("/library/")
+	@Path("/library")
 	@Produces("application/json")
 	public Response addLibrary(@FormParam("category_id") int category_id,
 	                           @FormParam("title") String title,
@@ -219,7 +216,8 @@ public class LibraryService {
 	}
 
 	@GET
-	@Path("/library/")
+	@Path("/library")
+	@Produces("application/json")
 	public Response getLibraries() {
 		Library[] libraries = Library.getLibraries();
 		/*Map<Long,Library> librariesMap = new HashMap<Long,Library>();
@@ -316,7 +314,7 @@ public class LibraryService {
 		return Response.ok(createLibrariesJson(libraryDTOList).toString()).build();
 	}
 
-	private JSONObject createLibrayJson(LibraryDTO libraryDTO) {
+	private JSONObject createLibraryJson(LibraryDTO libraryDTO) {
 		JSONObject library = new JSONObject();
 
 		library.put("url", libraryDTO.getUrl());
@@ -350,7 +348,7 @@ public class LibraryService {
 	private JSONObject createLibrariesJson(List<LibraryDTO> libraries) {
 		JSONObject librariesJSON = new JSONObject();
 		for (LibraryDTO dto : libraries) {
-			librariesJSON.put(Long.toString(dto.getContent_id()), createLibrayJson(dto));
+			librariesJSON.put(Long.toString(dto.getContent_id()), createLibraryJson(dto));
 		}
 		JSONObject result = new JSONObject();
 		result.put("libraries", librariesJSON);
