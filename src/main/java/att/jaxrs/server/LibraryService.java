@@ -262,7 +262,7 @@ public class LibraryService {
 	@GET
 	@Path("/library")
 	@Produces("application/json")
-	public Response getLibraries() {
+	public String getLibraries() {
 		Library[] libraries = Library.getLibraries();
 
 		Content[] contents = Content.getContents();
@@ -353,7 +353,8 @@ public class LibraryService {
 
 		}
 
-		return Response.ok(createLibrariesJson(libraryDTOList).toString()).build();
+		//return Response.ok(createLibrariesJson(libraryDTOList).toString()).build();
+		return createLibrariesJson(libraryDTOList).toString();
 	}
 
 	/**
