@@ -46,7 +46,7 @@ public class LibraryService {
 	@POST
 	@Path("/library")
 	@Produces("application/json")
-	public Response addLibrary(@FormParam("category_id") int category_id,
+	public String addLibrary(@FormParam("category_id") int category_id,
 	                           @FormParam("title") String title,
 	                           @FormParam("published_date") String published_date,
 	                           @FormParam("url") String url,
@@ -56,12 +56,12 @@ public class LibraryService {
 	                           @FormParam("tag_id") String tag_id) {
 		System.out.println("----invoking addLibrary, Library Title is: " + title);
 		if ((null != title && title.isEmpty()) || null == title || category_id == 0) {
-			return Response.status(400).header("Access-Control-Allow-Origin", "*").build();
+			//			return Response.status(400).header("Access-Control-Allow-Origin", "*").build();
+			return "400";
 		}
 		final long content_id = Library.getExistingRecord(title, category_id);
 		System.out.println("content id " + content_id);
 		JSONObject response = new JSONObject();
-		AddLibraryDTO dto = new AddLibraryDTO();
 		if (-1 != content_id) {
 			JSONObject m1 = new JSONObject();
 			m1.put("Library", "EXISTING_RECORD");
@@ -69,9 +69,7 @@ public class LibraryService {
 			response.put("response", m1);
 			/*return Response.notModified(response.toString()).header("Access-Control-Allow-Origin",
 			                                                        "*").build();*/
-			dto.setResponse(m1.toString());
-			return Response.ok(dto).status(304).header("Access-Control-Allow-Origin",
-			                                           "*").build();
+			return response.toString();
 		}
 
 		JSONObject responseDS = new JSONObject();
@@ -100,10 +98,8 @@ public class LibraryService {
 			responseDS.put("tags", responseTagDS);
 		}
 		response.put("response", responseDS);
-		dto.setResponse(response.toString());
 		//		return Response.ok(response.toString()).header("Access-Control-Allow-Origin", "*").build();
-		return Response.ok(dto).header("Access-Control-Allow-Origin", "*").build();
-
+		return response.toString();
 	}
 
 	/**
@@ -231,7 +227,7 @@ public class LibraryService {
 	 * API method for Delete library.
 	 *
 	 * @param content_id ID of the library to be deleted.
-	 * @return
+	 * @return status as application/json.
 	 */
 	@DELETE
 	@Path("/library")
