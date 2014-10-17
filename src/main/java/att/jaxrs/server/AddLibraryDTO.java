@@ -18,8 +18,6 @@
 
 package att.jaxrs.server;
 
-import org.json.JSONObject;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -30,13 +28,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "response")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AddLibraryDTO {
-	private JSONObject response = new JSONObject();
+	private String response;
 
-	public JSONObject getResponse() {
+	public String getResponse() {
 		return response;
 	}
 
-	public void setResponse(JSONObject response) {
+	public void setResponse(String response) {
 		this.response = response;
 	}
 

@@ -69,7 +69,7 @@ public class LibraryService {
 			response.put("response", m1);
 			/*return Response.notModified(response.toString()).header("Access-Control-Allow-Origin",
 			                                                        "*").build();*/
-			dto.setResponse(m1);
+			dto.setResponse(m1.toString());
 			return Response.ok(dto).status(304).header("Access-Control-Allow-Origin",
 			                                           "*").build();
 		}
@@ -100,7 +100,7 @@ public class LibraryService {
 			responseDS.put("tags", responseTagDS);
 		}
 		response.put("response", responseDS);
-		dto.setResponse(response);
+		dto.setResponse(response.toString());
 		//		return Response.ok(response.toString()).header("Access-Control-Allow-Origin", "*").build();
 		return Response.ok(dto).header("Access-Control-Allow-Origin", "*").build();
 
