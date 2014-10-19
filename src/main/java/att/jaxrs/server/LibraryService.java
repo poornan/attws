@@ -19,6 +19,7 @@
 package att.jaxrs.server;
 
 import att.jaxrs.client.*;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import javax.ws.rs.*;
@@ -404,14 +405,16 @@ public class LibraryService {
 	 * @param libraries LibraryDTO list.
 	 * @return Libraries as application/json.
 	 */
-	private JSONObject createLibrariesJson(List<LibraryDTO> libraries) {
-		JSONObject librariesJSON = new JSONObject();
+	private JSONArray createLibrariesJson(List<LibraryDTO> libraries) {
+		//		JSONObject librariesJSON = new JSONObject();
+		JSONArray jsonArray = new JSONArray();
 		for (LibraryDTO dto : libraries) {
-			librariesJSON.put(Long.toString(dto.getContent_id()), createLibraryJson(dto));
+			//			librariesJSON.put(Long.toString(dto.getContent_id()), createLibraryJson(dto));
+			jsonArray.put(createLibraryJson(dto));
 		}
-		JSONObject result = new JSONObject();
-		result.put("libraries", librariesJSON);
-		return result;
+		//		JSONObject result = new JSONObject();
+		//		result.put("libraries", librariesJSON);
+		return jsonArray;
 	}
 
 }
