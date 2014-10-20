@@ -376,6 +376,7 @@ public class LibraryService {
 
 		library.put("url", libraryDTO.getUrl());
 		library.put("title", libraryDTO.getTitle());
+		library.put("contentID", libraryDTO.getContent_id());
 
 		JSONObject category = new JSONObject();
 		category.put("categoryID", libraryDTO.getCategory().getCategory_id());
