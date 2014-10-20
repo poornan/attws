@@ -39,10 +39,14 @@
         <jaxrs:serviceBeans>
             <ref bean="libraryServiceBean"/>
         </jaxrs:serviceBeans>
+        <jaxrs:providers>
+            <ref bean="responseFilter"/>
+        </jaxrs:providers>
     </jaxrs:server>
 
     <!--bean id="serviceBean" class="demo.jaxrs.server.CustomerService"/-->
     <bean id="tagServiceBean" class="att.jaxrs.server.TagService"/>
     <bean id="libraryServiceBean" class="att.jaxrs.server.LibraryService"/>
+    <bean id="responseFilter" class="att.jaxrs.server.ResponseFilter"/>
 </beans>
 
