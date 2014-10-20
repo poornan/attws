@@ -87,14 +87,16 @@ public class LibraryService {
 		}
 
 		if (null != tag_id && !tag_id.isEmpty()) {
-			JSONObject responseTagDS = new JSONObject();
+			ArrayList<Map<Long, String>> responseTagDS = new ArrayList<Map<Long, String>>();
 			StringTokenizer stringtokenizer = new StringTokenizer(tag_id, ",");
 			while (stringtokenizer.hasMoreElements()) {
 				String id = stringtokenizer.nextToken();
 				Content_tag content_tag =
 						new Content_tag(Integer.parseInt(id), library.getContent_id());
-				responseTagDS
-						.put(id, Content_tag.addContent_tag(content_tag).replaceAll("<.*?>", ""));
+				Map<Long, String> map = new HashMap<Long, String>();
+				map.put(Long.valueOf(id),
+				        Content_tag.addContent_tag(content_tag).replaceAll("<.*?>", ""));
+				responseTagDS.add(map);
 
 			}
 			responseDS.put("tags", responseTagDS);
