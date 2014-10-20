@@ -99,4 +99,5 @@ public class LibraryDTO {
 	public void setContent(Content content) {
 		this.content = content;
 	}
+
 }
