@@ -22,6 +22,7 @@ import att.jaxrs.client.Category;
 import att.jaxrs.client.Content;
 import att.jaxrs.client.Webinar;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +34,8 @@ public class LibraryDTO {
 	private String url;
 	private String title;
 	private Category category;
-	private Map<Long, String> tag = new HashMap<Long, String>();
+	//private Map<Long, String> tag = new HashMap<Long, String>();
+	private ArrayList<Map<String, String>> tag = new ArrayList<Map<String, String>>();
 	private Webinar webinar;
 	private Content content;
 
@@ -69,12 +71,17 @@ public class LibraryDTO {
 		this.category = category;
 	}
 
-	public Map<Long, String> getTag() {
-		return tag;
+	public Map[] getTag() {
+		Map[] tags = new HashMap[tag.size()];
+		tags = tag.toArray(tags);
+		return tags;
 	}
 
 	public void setTag(long tagID, String tagName) {
-		tag.put(tagID, tagName);
+		Map<String, String> tag1 = new HashMap<String, String>();
+		tag1.put("tagID", Long.toString(tagID));
+		tag1.put("tagName", tagName);
+		tag.add(tag1);
 	}
 
 	public Webinar getWebinar() {
