@@ -18,15 +18,10 @@
 
 package att.jaxrs.server;
 
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerResponseContext;
-import javax.ws.rs.container.ContainerResponseFilter;
-import java.io.IOException;
-
 /**
  * Created by ananthaneshan on 10/20/14.
  */
-public class ResponseFilter implements ContainerResponseFilter {
+/*public class ResponseFilter implements ContainerResponseFilter {
 
 	public void filter(ContainerRequestContext containerRequestContext,
 	                   ContainerResponseContext containerResponseContext) throws IOException {
@@ -38,4 +33,4 @@ public class ResponseFilter implements ContainerResponseFilter {
 		                                          "GET, POST, PUT, DELETE, OPTIONS, HEAD");
 		containerResponseContext.getHeaders().add("Access-Control-Max-Age", "1209600");
 	}
-}
+}*/
