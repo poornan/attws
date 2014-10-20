@@ -57,7 +57,7 @@ public class LibraryService {
 		System.out.println("----invoking addLibrary, Library Title is: " + title);
 		if ((null != title && title.isEmpty()) || null == title || category_id == 0) {
 			//			return Response.status(400).header("Access-Control-Allow-Origin", "*").build();
-			return "400";
+			return "{response:{},status:400}";
 		}
 		final long content_id = Library.getExistingRecord(title, category_id);
 		System.out.println("content id " + content_id);
@@ -67,6 +67,7 @@ public class LibraryService {
 			m1.put("Library", "EXISTING_RECORD");
 			m1.put("content_id", Long.toString(content_id));
 			response.put("response", m1);
+			response.put("status", 304);
 			/*return Response.notModified(response.toString()).header("Access-Control-Allow-Origin",
 			                                                        "*").build();*/
 			return response.toString();
@@ -74,15 +75,15 @@ public class LibraryService {
 
 		JSONObject responseDS = new JSONObject();
 		Library library = new Library(published_date, category_id, title, url);
-		responseDS.put("Library", Library.addLibrary(library));
+		responseDS.put("Library", Library.addLibrary(library).replaceAll("<.*?>", ""));
 		library.setContent_id(Library.getExistingRecord(title, category_id));
 
 		if (library.getCategory_id() == 4) {
 			Webinar webinar = new Webinar(library.getContent_id(), presenter);
-			responseDS.put("Webinar", Webinar.addWebinar(webinar));
+			responseDS.put("Webinar", Webinar.addWebinar(webinar).replaceAll("<.*?>", ""));
 		} else {
 			Content content = new Content(library.getContent_id(), level, presenter, reads);
-			responseDS.put("Content", Content.addContent(content));
+			responseDS.put("Content", Content.addContent(content).replaceAll("<.*?>", ""));
 		}
 
 		if (null != tag_id && !tag_id.isEmpty()) {
@@ -92,12 +93,14 @@ public class LibraryService {
 				String id = stringtokenizer.nextToken();
 				Content_tag content_tag =
 						new Content_tag(Integer.parseInt(id), library.getContent_id());
-				responseTagDS.put(id, Content_tag.addContent_tag(content_tag));
+				responseTagDS
+						.put(id, Content_tag.addContent_tag(content_tag).replaceAll("<.*?>", ""));
 
 			}
 			responseDS.put("tags", responseTagDS);
 		}
 		response.put("response", responseDS);
+		response.put("status", 200);
 		//		return Response.ok(response.toString()).header("Access-Control-Allow-Origin", "*").build();
 		return response.toString();
 	}
