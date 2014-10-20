@@ -71,10 +71,9 @@ public class LibraryDTO {
 		this.category = category;
 	}
 
-	public Map<String, String>[] getTag() {
-		Map<String, String>[] tags = new HashMap[tag.size()];
-		tags = tag.toArray(tags);
-		return tags;
+	public ArrayList<Map<String, String>> getTag() {
+
+		return tag;
 	}
 
 	public void setTag(long tagID, String tagName) {

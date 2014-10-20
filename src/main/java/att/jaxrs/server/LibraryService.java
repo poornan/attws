@@ -381,6 +381,8 @@ public class LibraryService {
 		category.put("categoryID", libraryDTO.getCategory().getCategory_id());
 		category.put("categoryName", libraryDTO.getCategory().getCategory_name());
 		library.put("category", category);
+		//Map<String, String>[] tags = new HashMap[tag.size()];
+		//tags = libraryDTO.getTag().toArray(tags);
 		library.put("tags", libraryDTO.getTag());
 
 		if (libraryDTO.getCategory().getCategory_id() == 4 && null != libraryDTO.getWebinar()) {
