@@ -244,35 +244,47 @@ public class LibraryService {
 
 		}
 
+		Set<Long> tagIDFromDB = new HashSet<Long>();
+		Set<Long> tagIDFromUser = new HashSet<Long>();
 		if (!tag_id.isEmpty()) {
-			Set<Long> tagIDFromUser = new HashSet<Long>();
-			Set<Long> tagIDFromDB = new HashSet<Long>();
 			StringTokenizer stringtokenizer = new StringTokenizer(tag_id, ",");
 			while (stringtokenizer.hasMoreElements()) {
 				String id = stringtokenizer.nextToken();
 				tagIDFromUser.add(Long.valueOf(id));
 
 			}
-			Content_tagCollection collectionCT =
+		}
+		System.out.println(tagIDFromUser.toString());
+		Content_tagCollection collectionCT =
 					Content_tagCollection.getContentTagsWithID(content_id);
 
-			Content_tag[] tagsFromDB;
-			if (null != collectionCT.getContentTags()) {
-				tagsFromDB = collectionCT.getContentTags();
-				for (Content_tag tag : tagsFromDB) {
-					tagIDFromDB.add(tag.getTag_id());
-				}
+		Content_tag[] tagsFromDB;
+		if (null != collectionCT.getContentTags()) {
+			tagsFromDB = collectionCT.getContentTags();
+			for (Content_tag tag : tagsFromDB) {
+				tagIDFromDB.add(tag.getTag_id());
+			}
 
-				Iterator<Long> longIteratorDB = tagIDFromDB.iterator();
+			Iterator<Long> longIteratorDB = tagIDFromDB.iterator();
+			Iterator<Long> longIteratorUser = tagIDFromUser.iterator();
 
-				while (longIteratorDB.hasNext()) {
-					Long id = longIteratorDB.next();
+			while (longIteratorDB.hasNext()) {
+				long id = longIteratorDB.next();
 
-					if (tagIDFromUser.contains(id)) {
-						longIteratorDB.remove();
+				if (tagIDFromUser.contains(id)) {
+					longIteratorDB.remove();
 
+					while (longIteratorUser.hasNext()) {
+						long id1 = longIteratorUser.next();
+
+						if (id == id1) {
+							longIteratorUser.remove();
+
+						}
 					}
+
 				}
+			}
 
 				/*for (Long tag : tagIDFromDB) {
 					if (tagIDFromUser.contains(tag)) {
@@ -281,16 +293,7 @@ public class LibraryService {
 					}
 				}*/
 
-				Iterator<Long> longIteratorUser = tagIDFromUser.iterator();
 
-				while (longIteratorUser.hasNext()) {
-					Long id = longIteratorUser.next();
-
-					if (tagIDFromUser.contains(id)) {
-						longIteratorUser.remove();
-
-					}
-				}
 				/*for (Long tag : tagIDFromUser) {
 					if (tagIDFromUser.contains(tag)) {
 						tagIDFromUser.remove(tag);
@@ -298,11 +301,11 @@ public class LibraryService {
 					}
 				}*/
 
-				jsonObject
-						.put("tagsDeleted", Content_tag.deleteContentTags(tagIDFromDB, content_id));
-			}
-			jsonObject.put("tagsAdded", Content_tag.addContentTags(tagIDFromUser, content_id));
 		}
+		System.out.println(tagIDFromUser.toString());
+		jsonObject
+				.put("tagsDeleted", Content_tag.deleteContentTags(tagIDFromDB, content_id));
+		jsonObject.put("tagsAdded", Content_tag.addContentTags(tagIDFromUser, content_id));
 		/*return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
 		               .build();*/
 		jsonObject.put("status", 200);
