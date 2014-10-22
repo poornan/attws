@@ -174,7 +174,7 @@ public class Library {
 		try {
 
 			DefaultHttpClient httpClient = new DefaultHttpClient();
-			HttpPost post = new HttpPost(Constants.UPDATE_LIBRARY_RESOURCE);
+			HttpPost post = new HttpPost(Constants.SELECT_WITH_KEY_LIBRARY_RESOURCE);
 			post.setEntity(new UrlEncodedFormEntity(urlParameters));
 			HttpResponse result = httpClient.execute(post);
 			System.out.println(Constants.RESPONSE_STATUS_CODE + result);
