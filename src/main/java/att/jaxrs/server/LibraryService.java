@@ -173,7 +173,8 @@ public class LibraryService {
 	                              @FormParam("level") String level,
 	                              @FormParam("reads") String reads,
 	                              @FormParam("tag_id") String tag_id) {
-		if ((null != title && title.isEmpty()) || null == title || category_id == 0) {
+		if ((null != title && title.isEmpty()) || null == title || category_id == 0 ||
+		    content_id == 0) {
 			//			return Response.status(400).header("Access-Control-Allow-Origin", "*").build();
 			return "{response:{},status:400}";
 		}
