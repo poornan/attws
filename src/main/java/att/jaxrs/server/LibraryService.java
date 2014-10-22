@@ -224,18 +224,22 @@ public class LibraryService {
 			}
 
 			Tag[] tagsFromDB = Tag.getTagsWithID(content_id).getTag();
-			for (Tag tag : tagsFromDB) {
-				tagIDFromDB.add(tag.getTag_id());
-			}
-
-			for (Long tag : tagIDFromDB) {
-				if (tagIDFromUser.contains(tag)) {
-					tagIDFromDB.remove(tag);
+			if (null != Tag.getTagsWithID(content_id) &&
+			    null != Tag.getTagsWithID(content_id).getTag()) {
+				for (Tag tag : tagsFromDB) {
+					tagIDFromDB.add(tag.getTag_id());
 				}
-			}
 
-			jsonObject.put("tagsAdded", Content_tag.addContentTags(tagIDFromUser, content_id));
-			jsonObject.put("tagsDeleted", Content_tag.deleteContentTags(tagIDFromDB, content_id));
+				for (Long tag : tagIDFromDB) {
+					if (tagIDFromUser.contains(tag)) {
+						tagIDFromDB.remove(tag);
+					}
+				}
+
+				jsonObject.put("tagsAdded", Content_tag.addContentTags(tagIDFromUser, content_id));
+				jsonObject
+						.put("tagsDeleted", Content_tag.deleteContentTags(tagIDFromDB, content_id));
+			}
 		}
 		/*return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
 		               .build();*/
