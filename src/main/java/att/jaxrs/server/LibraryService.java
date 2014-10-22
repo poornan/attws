@@ -175,31 +175,40 @@ public class LibraryService {
 	                              @FormParam("tag_id") String tag_id) {
 		if ((null != title && title.isEmpty()) || null == title || category_id == 0) {
 			//			return Response.status(400).header("Access-Control-Allow-Origin", "*").build();
-			return "400";
+			return "{response:{},status:400}";
 		}
 
 		Library dbLibrary = Library.selectWithKeyLibraryResource(content_id);
 		Library library = new Library(content_id, published_date, category_id, title, url);
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("libraryUpdated", Library.updateLibrary(library));
+		jsonObject.put("libraryUpdated", Library.updateLibrary(library).replaceAll("<.*?>", ""));
 
 		if ((dbLibrary.getCategory_id() == library.getCategory_id()) &&
 		    dbLibrary.getCategory_id() == 4) {
 			jsonObject.put("webinarUpdated",
-			               Webinar.updateWebinar(new Webinar(content_id, presenter)));
+			               Webinar.updateWebinar(new Webinar(content_id, presenter))
+			                      .replaceAll("<.*?>", ""));
 		} else if (dbLibrary.getCategory_id() != library.getCategory_id() &&
 		           dbLibrary.getCategory_id() == 4) {
 
-			jsonObject.put("webinarDeleted", Webinar.deleteWebinar(content_id));
+			jsonObject.put("webinarDeleted", Webinar.deleteWebinar(content_id).replaceAll("<.*?>",
+			                                                                              ""));
 			jsonObject.put("contentAdded",
-			               Content.addContent(new Content(content_id, level, presenter, reads)));
+			               Content.addContent(new Content(content_id, level, presenter, reads))
+			                      .replaceAll(
+					                      "<.*?>", ""));
 		} else if (dbLibrary.getCategory_id() != library.getCategory_id() &&
 		           library.getCategory_id() == 4) {
-			jsonObject.put("contentDeleted", Content.deleteContent(content_id));
-			jsonObject.put("webinarAdded", Webinar.addWebinar(new Webinar(content_id, presenter)));
+			jsonObject.put("contentDeleted", Content.deleteContent(content_id).replaceAll("<.*?>",
+			                                                                              ""));
+			jsonObject.put("webinarAdded",
+			               Webinar.addWebinar(new Webinar(content_id, presenter)).replaceAll(
+					               "<.*?>", ""));
 		} else {
 			jsonObject.put("contentUpdated",
-			               Content.updateContent(new Content(content_id, level, presenter, reads)));
+			               Content.updateContent(new Content(content_id, level, presenter, reads))
+			                      .replaceAll(
+					                      "<.*?>", ""));
 
 		}
 
@@ -229,6 +238,7 @@ public class LibraryService {
 		}
 		/*return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
 		               .build();*/
+		jsonObject.put("status", 200);
 		return jsonObject.toString();
 	}
 
