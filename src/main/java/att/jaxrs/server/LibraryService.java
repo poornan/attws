@@ -223,9 +223,10 @@ public class LibraryService {
 
 			}
 
-			Tag[] tagsFromDB = Tag.getTagsWithID(content_id).getTag();
+			Tag[] tagsFromDB;
 			if (null != Tag.getTagsWithID(content_id) &&
 			    null != Tag.getTagsWithID(content_id).getTag()) {
+				tagsFromDB = Tag.getTagsWithID(content_id).getTag();
 				for (Tag tag : tagsFromDB) {
 					tagIDFromDB.add(tag.getTag_id());
 				}
