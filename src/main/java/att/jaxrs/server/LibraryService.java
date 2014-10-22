@@ -344,6 +344,7 @@ public class LibraryService {
 
 			libraryDTO.setUrl(library.getUrl());
 			libraryDTO.setTitle(library.getTitle());
+			libraryDTO.setPublishedDate(library.getPublished_date());
 			libraryDTO.setCategory(categoriesMap.get(library.getCategory_id()));
 
 			if (library.getContent_id() == 4) {
@@ -381,6 +382,7 @@ public class LibraryService {
 
 		library.put("url", libraryDTO.getUrl());
 		library.put("title", libraryDTO.getTitle());
+		library.put("publishedDate", libraryDTO.getPublishedDate());
 		library.put("contentID", libraryDTO.getContent_id()); //contentID added
 
 		JSONObject category = new JSONObject();

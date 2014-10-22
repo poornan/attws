@@ -33,11 +33,20 @@ public class LibraryDTO {
 	private long content_id;
 	private String url;
 	private String title;
+	private String publishedDate;
 	private Category category;
 	//private Map<Long, String> tag = new HashMap<Long, String>();
 	private ArrayList<Map<String, String>> tag = new ArrayList<Map<String, String>>();
 	private Webinar webinar;
 	private Content content;
+
+	public String getPublishedDate() {
+		return publishedDate;
+	}
+
+	public void setPublishedDate(String publishedDate) {
+		this.publishedDate = publishedDate;
+	}
 
 	public long getContent_id() {
 		return content_id;
