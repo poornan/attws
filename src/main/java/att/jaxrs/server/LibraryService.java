@@ -237,10 +237,10 @@ public class LibraryService {
 					}
 				}
 
-				jsonObject.put("tagsAdded", Content_tag.addContentTags(tagIDFromUser, content_id));
 				jsonObject
 						.put("tagsDeleted", Content_tag.deleteContentTags(tagIDFromDB, content_id));
 			}
+			jsonObject.put("tagsAdded", Content_tag.addContentTags(tagIDFromUser, content_id));
 		}
 		/*return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
 		               .build();*/
