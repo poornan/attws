@@ -270,11 +270,13 @@ public class LibraryService {
 		}
 
 		Set<Long> tagIDs = new HashSet<Long>();
-		StringTokenizer stringtokenizer = new StringTokenizer(tag_id, ",");
-		while (stringtokenizer.hasMoreElements()) {
-			String id = stringtokenizer.nextToken();
-			tagIDs.add(Long.valueOf(id));
+		if (null != tag_id && !tag_id.isEmpty()) {
+			StringTokenizer stringtokenizer = new StringTokenizer(tag_id, ",");
+			while (stringtokenizer.hasMoreElements()) {
+				String id = stringtokenizer.nextToken();
+				tagIDs.add(Long.valueOf(id));
 
+			}
 		}
 		jsonObject.put("contentTagDeleted", Content_tag.deleteContentTags(tagIDs, content_id));
 		/*return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
