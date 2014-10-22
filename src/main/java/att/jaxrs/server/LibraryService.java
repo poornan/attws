@@ -55,9 +55,25 @@ public class LibraryService {
 	                           @FormParam("reads") String reads,
 	                           @FormParam("tag_id") String tag_id) {
 		System.out.println("----invoking addLibrary, Library Title is: " + title);
+		System.out.println(reads);
 		if ((null != title && title.isEmpty()) || null == title || category_id == 0) {
 			//			return Response.status(400).header("Access-Control-Allow-Origin", "*").build();
 			return "{response:{},status:400}";
+		}
+		if (null == published_date) {
+			published_date = "";
+		}
+		if (null == url) {
+			url = "";
+		}
+		if (null == reads) {
+			reads = "";
+		}
+		if (null == tag_id) {
+			tag_id = "";
+		}
+		if (null == presenter) {
+			presenter = "";
 		}
 		final long content_id = Library.getExistingRecord(title, category_id);
 		System.out.println("content id " + content_id);
@@ -86,7 +102,7 @@ public class LibraryService {
 			responseDS.put("Content", Content.addContent(content).replaceAll("<.*?>", ""));
 		}
 
-		if (null != tag_id && !tag_id.isEmpty()) {
+		if (!tag_id.isEmpty()) {
 			ArrayList<JSONObject> responseTagDS = new ArrayList<JSONObject>();
 			StringTokenizer stringtokenizer = new StringTokenizer(tag_id, ",");
 			while (stringtokenizer.hasMoreElements()) {
@@ -178,6 +194,21 @@ public class LibraryService {
 			//			return Response.status(400).header("Access-Control-Allow-Origin", "*").build();
 			return "{response:{},status:400}";
 		}
+		if (null == published_date) {
+			published_date = "";
+		}
+		if (null == url) {
+			url = "";
+		}
+		if (null == reads) {
+			reads = "";
+		}
+		if (null == tag_id) {
+			tag_id = "";
+		}
+		if (null == presenter) {
+			presenter = "";
+		}
 
 		Library dbLibrary = Library.selectWithKeyLibraryResource(content_id);
 		Library library = new Library(content_id, published_date, category_id, title, url);
@@ -213,7 +244,7 @@ public class LibraryService {
 
 		}
 
-		if (null != tag_id && !tag_id.isEmpty()) {
+		if (!tag_id.isEmpty()) {
 			Set<Long> tagIDFromUser = new HashSet<Long>();
 			Set<Long> tagIDFromDB = new HashSet<Long>();
 			StringTokenizer stringtokenizer = new StringTokenizer(tag_id, ",");
@@ -222,20 +253,50 @@ public class LibraryService {
 				tagIDFromUser.add(Long.valueOf(id));
 
 			}
+			Content_tagCollection collectionCT =
+					Content_tagCollection.getContentTagsWithID(content_id);
 
-			Tag[] tagsFromDB;
-			if (null != Tag.getTagsWithID(content_id) &&
-			    null != Tag.getTagsWithID(content_id).getTag()) {
-				tagsFromDB = Tag.getTagsWithID(content_id).getTag();
-				for (Tag tag : tagsFromDB) {
+			Content_tag[] tagsFromDB;
+			if (null != collectionCT.getContentTags()) {
+				tagsFromDB = collectionCT.getContentTags();
+				for (Content_tag tag : tagsFromDB) {
 					tagIDFromDB.add(tag.getTag_id());
 				}
 
-				for (Long tag : tagIDFromDB) {
-					if (tagIDFromUser.contains(tag)) {
-						tagIDFromDB.remove(tag);
+				Iterator<Long> longIteratorDB = tagIDFromDB.iterator();
+
+				while (longIteratorDB.hasNext()) {
+					Long id = longIteratorDB.next();
+
+					if (tagIDFromUser.contains(id)) {
+						longIteratorDB.remove();
+
 					}
 				}
+
+				/*for (Long tag : tagIDFromDB) {
+					if (tagIDFromUser.contains(tag)) {
+						tagIDFromDB.remove(tag);
+
+					}
+				}*/
+
+				Iterator<Long> longIteratorUser = tagIDFromUser.iterator();
+
+				while (longIteratorUser.hasNext()) {
+					Long id = longIteratorUser.next();
+
+					if (tagIDFromUser.contains(id)) {
+						longIteratorUser.remove();
+
+					}
+				}
+				/*for (Long tag : tagIDFromUser) {
+					if (tagIDFromUser.contains(tag)) {
+						tagIDFromUser.remove(tag);
+
+					}
+				}*/
 
 				jsonObject
 						.put("tagsDeleted", Content_tag.deleteContentTags(tagIDFromDB, content_id));

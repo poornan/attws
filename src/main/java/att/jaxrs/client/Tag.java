@@ -163,32 +163,6 @@ public class Tag {
 
 	}
 
-	public static TagCollection getTagsWithID(long content_id) {
-		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-		urlParameters.add(new BasicNameValuePair("content_id", Long.toString(content_id)));
-
-		TagCollection tagCollection = new TagCollection();
-
-		try {
-			System.out.println("invoking getTagsWithID: " + content_id);
-			DefaultHttpClient httpClient = new DefaultHttpClient();
-			HttpPost post = new HttpPost(Constants.SELECT_WITH_KEY_CONTENT_TAG_RESOURCE);
-			post.setEntity(new UrlEncodedFormEntity(urlParameters));
-			HttpResponse result = httpClient.execute(post);
-			System.out.println(Constants.RESPONSE_STATUS_CODE + result);
-			String resultStr = Util.getStringFromInputStream(result);
-
-			tagCollection =
-					Marshal.unmarshal(TagCollection.class, resultStr);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
-
-		return tagCollection;
-	}
-
 	public long getTag_id() {
 		return tag_id;
 	}

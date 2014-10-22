@@ -155,9 +155,9 @@ public class Library {
 			post.setEntity(new UrlEncodedFormEntity(urlParameters));
 			HttpResponse result = httpClient.execute(post);
 			System.out.println(Constants.RESPONSE_STATUS_CODE + result);
-			resultStr = Util.getStringFromInputStream(result.getEntity().getContent());
+			resultStr = Util.getStringFromInputStream(result);
 			System.out.println(Constants.RESPONSE_BODY + resultStr);
-
+			System.out.println("testing $$$$$$$$$$$$$$$$$$$$$$");
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 
@@ -178,8 +178,9 @@ public class Library {
 			post.setEntity(new UrlEncodedFormEntity(urlParameters));
 			HttpResponse result = httpClient.execute(post);
 			System.out.println(Constants.RESPONSE_STATUS_CODE + result);
-			String resultStr = Util.getStringFromInputStream(result.getEntity().getContent());
+			String resultStr = Util.getStringFromInputStream(result);
 			System.out.println(Constants.RESPONSE_BODY + resultStr);
+			System.out.println("##################################");
 
 			libraryCollection = Marshal.unmarshal(LibraryCollection.class, resultStr);
 

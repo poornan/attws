@@ -18,10 +18,22 @@
 
 package att.jaxrs.client;
 
+import att.jaxrs.util.Constants;
+import att.jaxrs.util.Marshal;
+import att.jaxrs.util.Util;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ananthaneshan on 10/17/14.
@@ -42,5 +54,31 @@ public class Content_tagCollection implements att.jaxrs.client.XmlRootElement<Co
 
 	public Content_tag[] getElements() {
 		return contentTags;
+	}
+
+	public static Content_tagCollection getContentTagsWithID(long content_id) {
+		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
+		urlParameters.add(new BasicNameValuePair("content_id", Long.toString(content_id)));
+
+		Content_tagCollection collectionCT = new Content_tagCollection();
+
+		try {
+			System.out.println("invoking getTagsWithID: " + content_id);
+			DefaultHttpClient httpClient = new DefaultHttpClient();
+			HttpPost post = new HttpPost(Constants.SELECT_WITH_KEY_CONTENT_TAG_RESOURCE);
+			post.setEntity(new UrlEncodedFormEntity(urlParameters));
+			HttpResponse result = httpClient.execute(post);
+			System.out.println(Constants.RESPONSE_STATUS_CODE + result);
+			String resultStr = Util.getStringFromInputStream(result);
+
+			collectionCT =
+					Marshal.unmarshal(Content_tagCollection.class, resultStr);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+
+		return collectionCT;
 	}
 }

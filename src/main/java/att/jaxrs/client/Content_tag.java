@@ -91,21 +91,24 @@ public class Content_tag {
 		JSONObject jsonObject = new JSONObject();
 		for (long tagID : tagIDs) {
 			//result.append(tagID).append(",").append(addContent_tag(content_id, tagID));
-			jsonObject.put(Long.toString(tagID), addContent_tag(content_id, tagID));
+			jsonObject.put(Long.toString(tagID), addContent_tag(content_id, tagID).replaceAll(
+					"<.*?>", ""));
 		}
 		//result.append("'}}");
 		//return result.toString();
 		return jsonObject;
 	}
 
-	public static String deleteContentTags(Set<Long> tagIDs, long content_id) {
-
-		StringBuilder result = new StringBuilder("{ 'tags':{'");
+	public static JSONObject deleteContentTags(Set<Long> tagIDs, long content_id) {
+		JSONObject jsonObject = new JSONObject();
+		//StringBuilder result = new StringBuilder("{ 'tags':{'");
 		for (long tagID : tagIDs) {
-			result.append(tagID).append(",").append(deleteContent_tag(content_id, tagID));
+			//			result.append(tagID).append(",").append(deleteContent_tag(content_id, tagID));
+			jsonObject.put(Long.toString(tagID),
+			               deleteContent_tag(content_id, tagID).replaceAll("<.*?>", ""));
 		}
-		result.append("'}}");
-		return result.toString().replaceAll("<.*?>", "");
+		//		result.append("'}}");
+		return jsonObject;//result.toString();
 	}
 
 	public static String deleteContent_tag(long content_id, long tag_id) {
