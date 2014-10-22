@@ -262,11 +262,13 @@ public class LibraryService {
 	                              @FormParam("tag_id") String tag_id) {
 
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("libraryDeleted", Library.deleteLibrary(content_id));
+		jsonObject.put("libraryDeleted", Library.deleteLibrary(content_id).replaceAll("<.*?>", ""));
 		if (category_id == 4) {
-			jsonObject.put("webinarDeleted", Webinar.deleteWebinar(content_id));
+			jsonObject.put("webinarDeleted", Webinar.deleteWebinar(content_id).replaceAll("<.*?>",
+			                                                                              ""));
 		} else {
-			jsonObject.put("contentDeleted", Content.deleteContent(content_id));
+			jsonObject.put("contentDeleted", Content.deleteContent(content_id).replaceAll("<.*?>",
+			                                                                              ""));
 		}
 
 		Set<Long> tagIDs = new HashSet<Long>();
@@ -281,6 +283,7 @@ public class LibraryService {
 		jsonObject.put("contentTagDeleted", Content_tag.deleteContentTags(tagIDs, content_id));
 		/*return Response.ok(jsonObject.toString()).header("Access-Control-Allow-Origin", "*")
 		               .build();*/
+		jsonObject.put("status", 200);
 		return jsonObject.toString();
 
 	}

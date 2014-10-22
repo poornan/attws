@@ -105,7 +105,7 @@ public class Content_tag {
 			result.append(tagID).append(",").append(deleteContent_tag(content_id, tagID));
 		}
 		result.append("'}}");
-		return result.toString();
+		return result.toString().replaceAll("<.*?>", "");
 	}
 
 	public static String deleteContent_tag(long content_id, long tag_id) {
