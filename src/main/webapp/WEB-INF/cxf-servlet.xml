@@ -25,28 +25,15 @@
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
          http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
-    <!--jaxrs:server id="customerService" address="/customers">
-        <jaxrs:serviceBeans>
-            <ref bean="serviceBean"/>
-        </jaxrs:serviceBeans>
-    </jaxrs:server-->
-    <!--<jaxrs:server id="tagService" address="/tags">
-        <jaxrs:serviceBeans>
-            <ref bean="tagServiceBean"/>
-        </jaxrs:serviceBeans>
-    </jaxrs:server>-->
-    <jaxrs:server id="libraryService" address="/library">
+
+<jaxrs:server id="libraryService" address="/library">
         <jaxrs:serviceBeans>
             <ref bean="libraryServiceBean"/>
         </jaxrs:serviceBeans>
-        <!--<jaxrs:providers>
-            <ref bean="responseFilter"/>
-        </jaxrs:providers>-->
     </jaxrs:server>
 
-    <!--bean id="serviceBean" class="demo.jaxrs.server.CustomerService"/-->
     <bean id="tagServiceBean" class="att.jaxrs.server.TagService"/>
     <bean id="libraryServiceBean" class="att.jaxrs.server.LibraryService"/>
-    <!--<bean id="responseFilter" class="att.jaxrs.server.ResponseFilter"/>-->
+
 </beans>
 

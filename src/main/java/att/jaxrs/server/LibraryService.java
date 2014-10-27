@@ -47,13 +47,13 @@ public class LibraryService {
 	@Path("/library")
 	@Produces("application/json")
 	public String addLibrary(@FormParam("category_id") int category_id,
-	                           @FormParam("title") String title,
-	                           @FormParam("published_date") String published_date,
-	                           @FormParam("url") String url,
-	                           @FormParam("presenter") String presenter,
-	                           @FormParam("level") String level,
-	                           @FormParam("reads") String reads,
-	                           @FormParam("tag_id") String tag_id) {
+	                         @FormParam("title") String title,
+	                         @FormParam("published_date") String published_date,
+	                         @FormParam("url") String url,
+	                         @FormParam("presenter") String presenter,
+	                         @FormParam("level") String level,
+	                         @FormParam("reads") String reads,
+	                         @FormParam("tag_id") String tag_id) {
 		System.out.println("----invoking addLibrary, Library Title is: " + title);
 		System.out.println(reads);
 		if ((null != title && title.isEmpty()) || null == title || category_id == 0) {
@@ -181,14 +181,14 @@ public class LibraryService {
 	@Path("/library")
 	@Produces("application/json")
 	public String updateLibrary(@FormParam("category_id") int category_id,
-	                              @FormParam("content_id") long content_id,
-	                              @FormParam("title") String title,
-	                              @FormParam("published_date") String published_date,
-	                              @FormParam("url") String url,
-	                              @FormParam("presenter") String presenter,
-	                              @FormParam("level") String level,
-	                              @FormParam("reads") String reads,
-	                              @FormParam("tag_id") String tag_id) {
+	                            @FormParam("content_id") long content_id,
+	                            @FormParam("title") String title,
+	                            @FormParam("published_date") String published_date,
+	                            @FormParam("url") String url,
+	                            @FormParam("presenter") String presenter,
+	                            @FormParam("level") String level,
+	                            @FormParam("reads") String reads,
+	                            @FormParam("tag_id") String tag_id) {
 		if ((null != title && title.isEmpty()) || null == title || category_id == 0 ||
 		    content_id == 0) {
 			//			return Response.status(400).header("Access-Control-Allow-Origin", "*").build();
@@ -256,7 +256,7 @@ public class LibraryService {
 		}
 		System.out.println(tagIDFromUser.toString());
 		Content_tagCollection collectionCT =
-					Content_tagCollection.getContentTagsWithID(content_id);
+				Content_tagCollection.getContentTagsWithID(content_id);
 
 		Content_tag[] tagsFromDB;
 		if (null != collectionCT.getContentTags()) {
@@ -285,22 +285,6 @@ public class LibraryService {
 
 				}
 			}
-
-				/*for (Long tag : tagIDFromDB) {
-					if (tagIDFromUser.contains(tag)) {
-						tagIDFromDB.remove(tag);
-
-					}
-				}*/
-
-
-				/*for (Long tag : tagIDFromUser) {
-					if (tagIDFromUser.contains(tag)) {
-						tagIDFromUser.remove(tag);
-
-					}
-				}*/
-
 		}
 		System.out.println(tagIDFromUser.toString());
 		jsonObject
@@ -322,8 +306,8 @@ public class LibraryService {
 	@Path("/library")
 	@Produces("application/json")
 	public String deleteLibrary(@FormParam("content_id") long content_id,
-	                              @FormParam("category_id") int category_id,
-	                              @FormParam("tag_id") String tag_id) {
+	                            @FormParam("category_id") int category_id,
+	                            @FormParam("tag_id") String tag_id) {
 
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("libraryDeleted", Library.deleteLibrary(content_id).replaceAll("<.*?>", ""));
