@@ -33,8 +33,23 @@
         <junit.version>4.8.2</junit.version>
         <cxf.version>2.6.1</cxf.version>
         <jersey-version>1.0</jersey-version>
+        <org.springframework.version>3.2.0.RELEASE</org.springframework.version>
     </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <version>${org.springframework.version}</version>
+            <type>jar</type>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <version>${org.springframework.version}</version>
+            <type>jar</type>
+            <scope>runtime</scope>
+        </dependency>
         <!--<dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-server</artifactId>
@@ -341,7 +356,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.2</version>
                 <configuration>
-                    <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+                    <!--<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>-->
                     <warName>${project.artifactId}</warName>
                 </configuration>
             </plugin>
