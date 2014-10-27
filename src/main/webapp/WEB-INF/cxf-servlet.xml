@@ -25,8 +25,17 @@
          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
          http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
+    <!-- The SecureAnnotationsInterceptor honors the @RolesAllowed, @PermitAll and @DenyAll annotations -->
+    <bean id="authorizationInterceptor"
+          class="org.apache.cxf.interceptor.security.SecureAnnotationsInterceptor">
+        <property name="securedObject" ref="libraryServiceBean"/>
+    </bean>
 
-<jaxrs:server id="libraryService" address="/library">
+    <jaxrs:server id="libraryService" address="/library">
+        <!-- set the interceptor for the jaxrs:server for in-bound messages to authorize the user -->
+        <jaxrs:inInterceptors>
+            <ref bean="authorizationInterceptor"/>
+        </jaxrs:inInterceptors>
         <jaxrs:serviceBeans>
             <ref bean="libraryServiceBean"/>
         </jaxrs:serviceBeans>

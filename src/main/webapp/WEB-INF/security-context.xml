@@ -28,11 +28,11 @@
            http://www.springframework.org/schema/security/spring-security-3.2.xsd">
 
     <security:http auto-config="true">
-        <security:intercept-url pattern="/logs/**" access="ROLE_USER, ROLE_ADMIN"/>
+        <!--<security:intercept-url pattern="/logs/**" access="ROLE_USER, ROLE_ADMIN"/>
         <security:intercept-url pattern="/logviewer.html" access="ROLE_USER, ROLE_ADMIN"/>
         <security:intercept-url pattern="/qr/**" access="ROLE_USER, ROLE_ADMIN"/>
-        <!-- security:intercept-url pattern="/sms/**" access="ROLE_USER, ROLE_ADMIN"/-->
-        <security:intercept-url pattern="/services/**" access="ROLE_USER"/>
+        &lt;!&ndash; security:intercept-url pattern="/sms/**" access="ROLE_USER, ROLE_ADMIN"/&ndash;&gt;
+        <security:intercept-url pattern="/services/**" access="ROLE_USER"/>-->
         <security:http-basic/>
     </security:http>
 

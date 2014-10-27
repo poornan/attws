@@ -19,10 +19,13 @@
 package att.jaxrs.server;
 
 import att.jaxrs.client.*;
+import att.jaxrs.util.Constants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import java.util.*;
 
 /**
@@ -30,6 +33,28 @@ import java.util.*;
  */
 @Path("/libraryService/")
 public class LibraryService {
+	//	<FormParams>
+	public static final String CATEGORY_ID = "category_id";
+	public static final String TITLE = "title";
+	public static final String PUBLISHED_DATE = "published_date";
+	public static final String URL = "url";
+	public static final String PRESENTER = "presenter";
+	public static final String LEVEL = "level";
+	public static final String READS = "reads";
+	public static final String TAG_ID = "tag_id";
+	public static final String CONTENT_ID = "content_id";
+	public static final String TAG_NAME = "tag_name";
+	//	</FormParams>
+
+	//	<ServiceURI>
+	public static final String LIBRARY_URI = "/library";
+	public static final String TAGS = "/tags";
+	public static final String ADD_TAG = "/addTag";
+	//	</ServiceURI>
+
+	public static final String EMPTY_STRING = "";
+	public static final String REGEX = "<.*?>";
+
 	/**
 	 * Create Library API call.
 	 *
@@ -44,16 +69,17 @@ public class LibraryService {
 	 * @return Query status as application/json.
 	 */
 	@POST
-	@Path("/library")
-	@Produces("application/json")
-	public String addLibrary(@FormParam("category_id") int category_id,
-	                         @FormParam("title") String title,
-	                         @FormParam("published_date") String published_date,
-	                         @FormParam("url") String url,
-	                         @FormParam("presenter") String presenter,
-	                         @FormParam("level") String level,
-	                         @FormParam("reads") String reads,
-	                         @FormParam("tag_id") String tag_id) {
+	@Path(LIBRARY_URI)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed(Constants.ROLE_ADMIN)
+	public String addLibrary(@FormParam(CATEGORY_ID) int category_id,
+	                         @FormParam(TITLE) String title,
+	                         @FormParam(PUBLISHED_DATE) String published_date,
+	                         @FormParam(URL) String url,
+	                         @FormParam(PRESENTER) String presenter,
+	                         @FormParam(LEVEL) String level,
+	                         @FormParam(READS) String reads,
+	                         @FormParam(TAG_ID) String tag_id) {
 		System.out.println("----invoking addLibrary, Library Title is: " + title);
 		System.out.println(reads);
 		if ((null != title && title.isEmpty()) || null == title || category_id == 0) {
@@ -61,19 +87,19 @@ public class LibraryService {
 			return "{response:{},status:400}";
 		}
 		if (null == published_date) {
-			published_date = "";
+			published_date = EMPTY_STRING;
 		}
 		if (null == url) {
-			url = "";
+			url = EMPTY_STRING;
 		}
 		if (null == reads) {
-			reads = "";
+			reads = EMPTY_STRING;
 		}
 		if (null == tag_id) {
-			tag_id = "";
+			tag_id = EMPTY_STRING;
 		}
 		if (null == presenter) {
-			presenter = "";
+			presenter = EMPTY_STRING;
 		}
 		final long content_id = Library.getExistingRecord(title, category_id);
 		System.out.println("content id " + content_id);
@@ -81,7 +107,7 @@ public class LibraryService {
 		if (-1 != content_id) {
 			JSONObject m1 = new JSONObject();
 			m1.put("Library", "EXISTING_RECORD");
-			m1.put("content_id", Long.toString(content_id));
+			m1.put(CONTENT_ID, Long.toString(content_id));
 			response.put("response", m1);
 			response.put("status", 304);
 			/*return Response.notModified(response.toString()).header("Access-Control-Allow-Origin",
@@ -91,15 +117,15 @@ public class LibraryService {
 
 		JSONObject responseDS = new JSONObject();
 		Library library = new Library(published_date, category_id, title, url);
-		responseDS.put("Library", Library.addLibrary(library).replaceAll("<.*?>", ""));
+		responseDS.put("Library", Library.addLibrary(library).replaceAll(REGEX, EMPTY_STRING));
 		library.setContent_id(Library.getExistingRecord(title, category_id));
 
 		if (library.getCategory_id() == 4) {
 			Webinar webinar = new Webinar(library.getContent_id(), presenter);
-			responseDS.put("Webinar", Webinar.addWebinar(webinar).replaceAll("<.*?>", ""));
+			responseDS.put("Webinar", Webinar.addWebinar(webinar).replaceAll(REGEX, EMPTY_STRING));
 		} else {
 			Content content = new Content(library.getContent_id(), level, presenter, reads);
-			responseDS.put("Content", Content.addContent(content).replaceAll("<.*?>", ""));
+			responseDS.put("Content", Content.addContent(content).replaceAll(REGEX, EMPTY_STRING));
 		}
 
 		if (!tag_id.isEmpty()) {
@@ -111,7 +137,8 @@ public class LibraryService {
 						new Content_tag(Integer.parseInt(id), library.getContent_id());
 				JSONObject map = new JSONObject();
 				map.put("tagID", Long.valueOf(id));
-				map.put("result", Content_tag.addContent_tag(content_tag).replaceAll("<.*?>", ""));
+				map.put("result", Content_tag.addContent_tag(content_tag).replaceAll(REGEX,
+				                                                                     EMPTY_STRING));
 				responseTagDS.add(map);
 
 			}
@@ -129,8 +156,8 @@ public class LibraryService {
 	 * @return tags as application/json
 	 */
 	@GET
-	@Path("/tags")
-	@Produces("application/json")
+	@Path(TAGS)
+	@Produces(MediaType.APPLICATION_JSON)
 	public String getTags() {
 		JSONObject jsonObject = new JSONObject();
 		TagCollection tagCollection = Tag.getTags();
@@ -152,9 +179,9 @@ public class LibraryService {
 	 * @return Query status as application/json.
 	 */
 	@POST
-	@Path("/addTag")
-	@Produces("application/json")
-	public String addTag(@FormParam("tag_name") String tag_name) {
+	@Path(ADD_TAG)
+	@Produces(MediaType.APPLICATION_JSON)
+	public String addTag(@FormParam(TAG_NAME) String tag_name) {
 		Tag tag = new Tag(tag_name);
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("tag", Tag.addTag(tag));
@@ -178,69 +205,71 @@ public class LibraryService {
 	 * @return Query status as application/json.
 	 */
 	@PUT
-	@Path("/library")
-	@Produces("application/json")
-	public String updateLibrary(@FormParam("category_id") int category_id,
-	                            @FormParam("content_id") long content_id,
-	                            @FormParam("title") String title,
-	                            @FormParam("published_date") String published_date,
-	                            @FormParam("url") String url,
-	                            @FormParam("presenter") String presenter,
-	                            @FormParam("level") String level,
-	                            @FormParam("reads") String reads,
-	                            @FormParam("tag_id") String tag_id) {
+	@Path(LIBRARY_URI)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed(Constants.ROLE_ADMIN)
+	public String updateLibrary(@FormParam(CATEGORY_ID) int category_id,
+	                            @FormParam(CONTENT_ID) long content_id,
+	                            @FormParam(TITLE) String title,
+	                            @FormParam(PUBLISHED_DATE) String published_date,
+	                            @FormParam(URL) String url,
+	                            @FormParam(PRESENTER) String presenter,
+	                            @FormParam(LEVEL) String level,
+	                            @FormParam(READS) String reads,
+	                            @FormParam(TAG_ID) String tag_id) {
 		if ((null != title && title.isEmpty()) || null == title || category_id == 0 ||
 		    content_id == 0) {
 			//			return Response.status(400).header("Access-Control-Allow-Origin", "*").build();
 			return "{response:{},status:400}";
 		}
 		if (null == published_date) {
-			published_date = "";
+			published_date = EMPTY_STRING;
 		}
 		if (null == url) {
-			url = "";
+			url = EMPTY_STRING;
 		}
 		if (null == reads) {
-			reads = "";
+			reads = EMPTY_STRING;
 		}
 		if (null == tag_id) {
-			tag_id = "";
+			tag_id = EMPTY_STRING;
 		}
 		if (null == presenter) {
-			presenter = "";
+			presenter = EMPTY_STRING;
 		}
 
 		Library dbLibrary = Library.selectWithKeyLibraryResource(content_id);
 		Library library = new Library(content_id, published_date, category_id, title, url);
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("libraryUpdated", Library.updateLibrary(library).replaceAll("<.*?>", ""));
+		jsonObject.put("libraryUpdated", Library.updateLibrary(library).replaceAll(REGEX,
+		                                                                           EMPTY_STRING));
 
 		if ((dbLibrary.getCategory_id() == library.getCategory_id()) &&
 		    dbLibrary.getCategory_id() == 4) {
 			jsonObject.put("webinarUpdated",
 			               Webinar.updateWebinar(new Webinar(content_id, presenter))
-			                      .replaceAll("<.*?>", ""));
+			                      .replaceAll(REGEX, EMPTY_STRING));
 		} else if (dbLibrary.getCategory_id() != library.getCategory_id() &&
 		           dbLibrary.getCategory_id() == 4) {
 
-			jsonObject.put("webinarDeleted", Webinar.deleteWebinar(content_id).replaceAll("<.*?>",
-			                                                                              ""));
+			jsonObject.put("webinarDeleted", Webinar.deleteWebinar(content_id).replaceAll(REGEX,
+			                                                                              EMPTY_STRING));
 			jsonObject.put("contentAdded",
 			               Content.addContent(new Content(content_id, level, presenter, reads))
 			                      .replaceAll(
-					                      "<.*?>", ""));
+					                      REGEX, EMPTY_STRING));
 		} else if (dbLibrary.getCategory_id() != library.getCategory_id() &&
 		           library.getCategory_id() == 4) {
-			jsonObject.put("contentDeleted", Content.deleteContent(content_id).replaceAll("<.*?>",
-			                                                                              ""));
+			jsonObject.put("contentDeleted", Content.deleteContent(content_id).replaceAll(REGEX,
+			                                                                              EMPTY_STRING));
 			jsonObject.put("webinarAdded",
 			               Webinar.addWebinar(new Webinar(content_id, presenter)).replaceAll(
-					               "<.*?>", ""));
+					               REGEX, EMPTY_STRING));
 		} else {
 			jsonObject.put("contentUpdated",
 			               Content.updateContent(new Content(content_id, level, presenter, reads))
 			                      .replaceAll(
-					                      "<.*?>", ""));
+					                      REGEX, EMPTY_STRING));
 
 		}
 
@@ -303,20 +332,22 @@ public class LibraryService {
 	 * @return status as application/json.
 	 */
 	@DELETE
-	@Path("/library")
-	@Produces("application/json")
-	public String deleteLibrary(@FormParam("content_id") long content_id,
-	                            @FormParam("category_id") int category_id,
-	                            @FormParam("tag_id") String tag_id) {
+	@Path(LIBRARY_URI)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed(Constants.ROLE_ADMIN)
+	public String deleteLibrary(@FormParam(CONTENT_ID) long content_id,
+	                            @FormParam(CATEGORY_ID) int category_id,
+	                            @FormParam(TAG_ID) String tag_id) {
 
 		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("libraryDeleted", Library.deleteLibrary(content_id).replaceAll("<.*?>", ""));
+		jsonObject.put("libraryDeleted", Library.deleteLibrary(content_id).replaceAll(REGEX,
+		                                                                              EMPTY_STRING));
 		if (category_id == 4) {
-			jsonObject.put("webinarDeleted", Webinar.deleteWebinar(content_id).replaceAll("<.*?>",
-			                                                                              ""));
+			jsonObject.put("webinarDeleted", Webinar.deleteWebinar(content_id).replaceAll(REGEX,
+			                                                                              EMPTY_STRING));
 		} else {
-			jsonObject.put("contentDeleted", Content.deleteContent(content_id).replaceAll("<.*?>",
-			                                                                              ""));
+			jsonObject.put("contentDeleted", Content.deleteContent(content_id).replaceAll(REGEX,
+			                                                                              EMPTY_STRING));
 		}
 
 		Set<Long> tagIDs = new HashSet<Long>();
@@ -342,8 +373,9 @@ public class LibraryService {
 	 * @return library content as application/json.
 	 */
 	@GET
-	@Path("/library")
-	@Produces("application/json")
+	@Path(LIBRARY_URI)
+	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({ Constants.ROLE_USER, Constants.ROLE_ADMIN })
 	public String getLibraries() {
 		Library[] libraries = Library.getLibraries();
 
@@ -449,8 +481,8 @@ public class LibraryService {
 	private JSONObject createLibraryJson(LibraryDTO libraryDTO) {
 		JSONObject library = new JSONObject();
 
-		library.put("url", libraryDTO.getUrl());
-		library.put("title", libraryDTO.getTitle());
+		library.put(URL, libraryDTO.getUrl());
+		library.put(TITLE, libraryDTO.getTitle());
 		library.put("publishedDate", libraryDTO.getPublishedDate());
 		library.put("contentID", libraryDTO.getContent_id()); //contentID added
 
@@ -464,14 +496,14 @@ public class LibraryService {
 
 		if (libraryDTO.getCategory().getCategory_id() == 4 && null != libraryDTO.getWebinar()) {
 			JSONObject webinar = new JSONObject();
-			webinar.put("presenter", libraryDTO.getWebinar().getPresenter());
+			webinar.put(PRESENTER, libraryDTO.getWebinar().getPresenter());
 			library.put("webinar", webinar);
 
 		} else if (null != libraryDTO.getContent()) {
 			JSONObject content = new JSONObject();
-			content.put("level", libraryDTO.getContent().getLevel());
-			content.put("presenter", libraryDTO.getContent().getPresenter());
-			content.put("reads", libraryDTO.getContent().getReads());
+			content.put(LEVEL, libraryDTO.getContent().getLevel());
+			content.put(PRESENTER, libraryDTO.getContent().getPresenter());
+			content.put(READS, libraryDTO.getContent().getReads());
 			library.put("content", content);
 		}
 

@@ -107,4 +107,8 @@ public class Constants {
 	public static final String SELECT_ALL_CATEGORY_OPERATION =
 			DATA_SERVICE_URI + "select_all_category_operation";
 
+	public static final String ROLE_USER = "ROLE_USER";
+
+	public static final String ROLE_ADMIN = "ROLE_ADMIN";
+
 }
