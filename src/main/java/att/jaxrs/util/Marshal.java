@@ -32,7 +32,10 @@ import java.io.InputStreamReader;
 /**
  * Created by ananthaneshan on 10/8/14.
  */
-public class Marshal {
+public final class Marshal {
+	private Marshal() {
+	}
+
 	public static <T> T unmarshal(Class<T> xmlType, InputStream inputStream) {
 		System.out.println("unmarshalling input stream");
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));

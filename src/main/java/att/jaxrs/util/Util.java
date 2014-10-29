@@ -27,7 +27,10 @@ import java.io.*;
 /**
  * Created by ananthaneshan on 10/10/14.
  */
-public class Util {
+public final class Util {
+	private Util() {
+	}
+
 	// convert InputStream to String
 	public static String getStringFromInputStream(InputStream inputStream) {
 		CachedOutputStream bos = new CachedOutputStream();
